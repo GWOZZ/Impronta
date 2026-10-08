@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { nav, site } from "@/lib/content";
+import { Arrow } from "./Arrow";
 
 export function Footer() {
   return (
@@ -11,7 +12,7 @@ export function Footer() {
             Contanos qué querés resolver. <em>Lo bajamos a un plan.</em>
           </p>
           <Link href="/contacto" className="btn btn--accent">
-            Agendar una reunión gratis <span aria-hidden="true">→</span>
+            Agendar una reunión gratis <Arrow />
           </Link>
         </div>
         <nav className="footer__nav" aria-label="Pie de página">

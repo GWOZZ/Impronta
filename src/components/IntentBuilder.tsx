@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { products } from "@/lib/content";
 import { CountUp } from "./CountUp";
+import { Arrow } from "./Arrow";
 
 /**
  * Catálogo como una frase para completar: "Quiero ___".
@@ -52,7 +53,7 @@ export function IntentBuilder({ children }: { children?: React.ReactNode }) {
                     {p.metric.count ? <CountUp {...p.metric.count} /> : p.metric.value}
                   </p>
                   <Link href={`/productos#${p.slug}`} className="btn btn--ink">
-                    Ver detalle del producto <span aria-hidden="true">→</span>
+                    Ver detalle del producto <Arrow />
                   </Link>
                 </div>
               </div>

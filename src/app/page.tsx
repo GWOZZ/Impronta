@@ -4,6 +4,7 @@ import { IntentBuilder } from "@/components/IntentBuilder";
 import { ParticleWordmark } from "@/components/ParticleWordmark";
 import { TypedWord } from "@/components/TypedWord";
 import { clients, faqs, heroWords, site, steps } from "@/lib/content";
+import { Arrow } from "@/components/Arrow";
 
 const faqJsonLd = {
   "@context": "https://schema.org",
@@ -46,16 +47,13 @@ export default function Home() {
           </p>
           <div className="hero__actions">
             <Link href="/contacto" className="btn btn--accent">
-              Agendar una reunión gratis <span aria-hidden="true">→</span>
+              Agendar una reunión gratis <Arrow />
             </Link>
             <Link href="/productos" className="btn btn--ghost">
               Ver productos
             </Link>
           </div>
         </div>
-        <p className="hero__hint mono" aria-hidden="true">
-          Mové el cursor sobre el logo
-        </p>
       </section>
 
       {/* 2 · Catálogo */}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { principles, team } from "@/lib/content";
+import { Arrow } from "@/components/Arrow";
 
 const description = "Equipo fundador y principios de ejecución de Ongenia.";
 
@@ -50,7 +51,7 @@ export default function Nosotros() {
                   <p className="member__bio">{m.bio}</p>
                   {m.linkedin && (
                     <a href={m.linkedin} className="member__link" target="_blank" rel="noopener">
-                      LinkedIn <span aria-hidden="true">↗</span>
+                      LinkedIn <Arrow dir="up-right" />
                     </a>
                   )}
                 </div>

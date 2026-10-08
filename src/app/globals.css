@@ -223,11 +223,18 @@ em {
     border-color 0.3s;
   white-space: nowrap;
 }
-.btn span[aria-hidden] {
+/* Flechas SVG (components/Arrow): 1em, centradas por el flex del botón. */
+.arrow {
+  flex: none;
+  vertical-align: -0.125em;
+}
+.btn .arrow {
+  width: 1.05em;
+  height: 1.05em;
   transition: transform 0.3s var(--ease);
 }
-.btn:hover span[aria-hidden] {
-  transform: translateX(4px);
+.btn:hover .arrow {
+  transform: translateX(3px);
 }
 .btn:active {
   transform: scale(0.98);
@@ -487,12 +494,16 @@ em {
 
 /* ---------- Hero ---------- */
 
+/* Ocupa exactamente la primera pantalla: al abrir el sitio solo se ve el hero.
+   El contenido se centra en el espacio bajo el navbar (padding-top). */
 .hero {
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(92px, 7vw, 104px) 0 clamp(80px, 8vw, 112px);
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 80px 0 72px;
   overflow: hidden;
 }
 .hero__grid {
@@ -512,7 +523,8 @@ em {
 .wordmark__text {
   /* "ongenia" no tiene ascendentes: la línea se ajusta a la altura de la x
      (más el punto de la i y la cola de la g), sin aire vacío arriba. */
-  font: 400 clamp(6.2rem, 27vw, 25rem) / 0.72 var(--f-display);
+  /* También limitado por el alto de la ventana, para que el hero entre en pantallas bajas. */
+  font: 400 clamp(6.2rem, min(27vw, 46svh), 25rem) / 0.72 var(--f-display);
   letter-spacing: -0.035em;
   text-align: center;
   padding-block: 0.05em 0.2em;
@@ -576,19 +588,6 @@ em {
   justify-content: center;
   gap: 12px;
   margin-top: 6px;
-}
-.hero__hint {
-  position: absolute;
-  left: 50%;
-  bottom: 24px;
-  transform: translateX(-50%);
-  color: var(--muted);
-  opacity: 0.8;
-}
-@media (hover: none) {
-  .hero__hint {
-    display: none;
-  }
 }
 
 /* ---------- Intent builder (catálogo) ---------- */
@@ -1131,6 +1130,8 @@ html:not(.js) .step__node {
 }
 .picker__arrow {
   position: absolute;
+  width: 18px;
+  height: 18px;
   top: 22px;
   right: 24px;
   transition: transform 0.3s var(--ease);
@@ -1296,7 +1297,10 @@ html:not(.js) .step__node {
 .demo__caption strong {
   font: 400 1.5rem/1 var(--f-display);
 }
-.demo__caption span:last-child {
+.demo__open {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   margin-left: auto;
   font-size: 14px;
 }

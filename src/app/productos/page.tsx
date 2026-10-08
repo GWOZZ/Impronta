@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CountUp } from "@/components/CountUp";
 import { contactHref, products } from "@/lib/content";
+import { Arrow } from "@/components/Arrow";
 
 const description = "Servicios de IA y software explicados en detalle y casos de aplicación reales.";
 
@@ -32,9 +33,7 @@ export default function Productos() {
                     <span className="mono">0{i + 1}</span>
                     <strong>{p.short}</strong>
                     <span className="muted">{p.tagline}</span>
-                    <span className="picker__arrow" aria-hidden="true">
-                      ↓
-                    </span>
+                    <Arrow dir="down" className="picker__arrow" />
                   </a>
                 </li>
               ))}
@@ -62,11 +61,11 @@ export default function Productos() {
               <p className="mono spec__objective">Objetivo · {p.objective}</p>
               <div className="spec__actions">
                 <Link href={contactHref(p)} className="btn btn--accent">
-                  {p.cta} <span aria-hidden="true">→</span>
+                  {p.cta} <Arrow />
                 </Link>
                 {p.externalSite && (
                   <a href={p.externalSite.href} className="btn btn--ghost" target="_blank" rel="noopener">
-                    Ver sitio · {p.externalSite.label} <span aria-hidden="true">↗</span>
+                    Ver sitio · {p.externalSite.label} <Arrow dir="up-right" />
                   </a>
                 )}
               </div>
@@ -109,7 +108,9 @@ export default function Productos() {
                     <span className="demo__caption">
                       <span className="mono">Demo</span>
                       <strong>{d.name}</strong>
-                      <span>Abrir sitio ↗</span>
+                      <span className="demo__open">
+                          Abrir sitio <Arrow dir="up-right" />
+                        </span>
                     </span>
                   </a>
                 ))}

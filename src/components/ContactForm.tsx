@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Arrow } from "./Arrow";
 
 type ProductOption = { name: string; short: string; objective: string; template: string };
 type Status = { type: "idle" | "sending" | "success" | "error"; message?: string };
@@ -155,7 +156,7 @@ export function ContactForm({ products }: { products: ProductOption[] }) {
 
       <div className="form__actions">
         <button type="submit" className="btn btn--accent" disabled={sending}>
-          {sending ? "Enviando…" : "Enviar solicitud"} <span aria-hidden="true">→</span>
+          {sending ? "Enviando…" : "Enviar solicitud"} <Arrow />
         </button>
         <button type="button" className="btn btn--ghost" onClick={reset} disabled={sending}>
           Limpiar
