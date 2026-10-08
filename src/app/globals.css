@@ -316,6 +316,9 @@ em {
   letter-spacing: -0.01em;
   text-decoration: none;
   margin-right: auto;
+  /* La caja de texto incluye espacio para ascendentes que "ongenia" no usa:
+     se sube para que la banda de la x (y el punto) quede al centro del navbar. */
+  transform: translateY(-0.068em);
 }
 .header__dot {
   /* Centrado en la altura de la x (0.51em en Instrument Serif), no en la caja del texto,
@@ -514,8 +517,13 @@ em {
   text-align: center;
   padding-block: 0.05em 0.2em;
 }
-.wordmark.is-live .wordmark__text {
+/* Con JS el texto real nunca se ve (lo dibujan las partículas): queda para SEO,
+   lectores de pantalla y layout. Se muestra solo sin JS o si el canvas falla. */
+.js .wordmark__text {
   color: transparent;
+}
+.wordmark.is-fallback .wordmark__text {
+  color: inherit;
 }
 .wordmark__canvas {
   position: absolute;

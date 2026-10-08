@@ -6,9 +6,9 @@ type Particle = { x: number; y: number; hx: number; hy: number; vx: number; vy: 
 
 /**
  * Dibuja el wordmark como una nube de partículas que se "genera" al cargar y
- * se dispersa con el cursor. El <h1> real queda debajo (para SEO, lectores
- * de pantalla y como fallback sin JS); se vuelve transparente cuando el
- * canvas está listo.
+ * se dispersa con el cursor. El <h1> real queda debajo, transparente desde el
+ * primer pintado si hay JS (para SEO y lectores de pantalla); solo se ve sin
+ * JS o si el canvas no está disponible.
  *
  * El canvas cubre el contenedor marcado con `data-particle-host` (el hero
  * entero), así las partículas pueden alejarse del logo sin recortarse.
@@ -24,7 +24,10 @@ export function ParticleWordmark({ text }: { text: string }) {
     if (!wrap || !canvas || !heading) return;
     const host = wrap.closest<HTMLElement>("[data-particle-host]") ?? wrap;
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!ctx) {
+      wrap.classList.add("is-fallback");
+      return;
+    }
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const css = getComputedStyle(document.documentElement);
@@ -95,7 +98,6 @@ export function ParticleWordmark({ text }: { text: string }) {
         }
       }
       particles = next;
-      wrap.classList.add("is-live");
     };
 
     const draw = () => {
