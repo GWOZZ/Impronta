@@ -1,14 +1,22 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useLayoutEffect, useRef } from "react";
 
-/** Agrega `is-in` a los elementos `[data-reveal]` cuando entran en pantalla. */
+/**
+ * Animación de entrada para `[data-reveal]`.
+ * Lo que ya está en pantalla se marca `is-in` antes del primer pintado (sin
+ * animación, para que la página no aparezca vacía); lo que está más abajo
+ * recibe `reveal-wait` y se muestra al entrar en pantalla.
+ */
 export function Reveal() {
   const pathname = usePathname();
+  const first = useRef(true);
 
-  useEffect(() => {
-    const els = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)");
+  useLayoutEffect(() => {
+    const isNavigation = !first.current;
+    first.current = false;
+    const els = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in):not(.reveal-wait)");
     if (!("IntersectionObserver" in window)) {
       els.forEach((el) => el.classList.add("is-in"));
       return;
@@ -24,7 +32,20 @@ export function Reveal() {
       },
       { rootMargin: "0px 0px -8% 0px" },
     );
-    els.forEach((el) => io.observe(el));
+    // En una navegación, Next.js todavía no volvió arriba: medimos contra el inicio del documento.
+    const inView = (el: HTMLElement) => {
+      const r = el.getBoundingClientRect();
+      if (isNavigation && !window.location.hash) return r.top + window.scrollY < window.innerHeight;
+      return r.top < window.innerHeight && r.bottom > 0;
+    };
+    els.forEach((el) => {
+      if (inView(el)) {
+        el.classList.add("is-in");
+      } else {
+        el.classList.add("reveal-wait");
+        io.observe(el);
+      }
+    });
     return () => io.disconnect();
   }, [pathname]);
 

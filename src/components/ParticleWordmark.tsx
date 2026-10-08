@@ -46,9 +46,9 @@ export function ParticleWordmark({ text }: { text: string }) {
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
 
-      // Renderiza el texto fuera de pantalla con la misma tipografía y posición del <h1>.
+      // Renderiza el texto fuera de pantalla letra por letra, en la posición exacta en
+      // que el navegador dibuja cada glifo del <h1> (incluye letter-spacing y kerning).
       const hs = getComputedStyle(heading);
-      const hr = heading.getBoundingClientRect();
       const off = document.createElement("canvas");
       off.width = Math.ceil(w);
       off.height = Math.ceil(h);
@@ -56,12 +56,25 @@ export function ParticleWordmark({ text }: { text: string }) {
       o.fillStyle = "#000";
       o.font = `${hs.fontStyle} ${hs.fontWeight} ${hs.fontSize} ${hs.fontFamily}`;
       o.textBaseline = "alphabetic";
-      o.textAlign = "center";
-      const metrics = o.measureText(text);
-      const textH = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-      const cx = hr.left - rect.left + hr.width / 2;
-      const baseline = hr.top - rect.top + (hr.height - textH) / 2 + metrics.actualBoundingBoxAscent;
-      o.fillText(text, cx, baseline);
+      o.textAlign = "left";
+
+      // Línea de base real: un elemento vacío alineado a la base del texto.
+      const probe = document.createElement("span");
+      probe.style.cssText = "display:inline-block;width:0;height:0;vertical-align:baseline";
+      heading.appendChild(probe);
+      const baseline = probe.getBoundingClientRect().bottom - rect.top;
+      heading.removeChild(probe);
+
+      const node = heading.firstChild;
+      if (node?.nodeType === Node.TEXT_NODE) {
+        const range = document.createRange();
+        const chars = node.textContent ?? "";
+        for (let i = 0; i < chars.length; i++) {
+          range.setStart(node, i);
+          range.setEnd(node, i + 1);
+          o.fillText(chars[i], range.getBoundingClientRect().left - rect.left, baseline);
+        }
+      }
 
       const step = Math.max(3, Math.round(parseFloat(hs.fontSize) / 46));
       size = Math.max(1.4, step * 0.62);
