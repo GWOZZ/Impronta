@@ -67,9 +67,6 @@ export default function Home() {
         <div className="wrap">
           <div data-reveal>
             <IntentBuilder>
-              <p className="eyebrow">
-                <span className="eyebrow__num">01</span> Catálogo
-              </p>
               <h2 id="catalogo" className="intent__title">
                 Nuestros productos. <em>Empezá por el objetivo.</em>
               </h2>
@@ -82,9 +79,6 @@ export default function Home() {
       <section className="section section--ink process" aria-labelledby="proceso">
         <div className="wrap">
           <div className="section__head" data-reveal>
-            <p className="eyebrow">
-              <span className="eyebrow__num">02</span> Proceso
-            </p>
             <h2 id="proceso" className="section__title">
               Quiénes somos y qué hacemos. <em>De la idea a la operación, en cuatro pasos.</em>
             </h2>
@@ -105,9 +99,6 @@ export default function Home() {
       {/* 4 · Clientes */}
       <section className="section section--tight clients" aria-labelledby="clientes">
         <div className="wrap clients__head" data-reveal>
-          <p className="eyebrow">
-            <span className="eyebrow__num">03</span> Clientes
-          </p>
           <h2 id="clientes" className="clients__title">
             Empresas con las que trabajamos
           </h2>
@@ -135,9 +126,6 @@ export default function Home() {
       <section className="section faq" aria-labelledby="faq">
         <div className="wrap faq__grid">
           <div className="faq__aside" data-reveal>
-            <p className="eyebrow">
-              <span className="eyebrow__num">04</span> FAQ
-            </p>
             <h2 id="faq" className="section__title">
               Preguntas <em>frecuentes</em>
             </h2>
