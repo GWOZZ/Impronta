@@ -35,10 +35,6 @@ export default function Home() {
       {/* 1 · Hero */}
       <section className="hero">
         <div className="hero__grid" aria-hidden="true" />
-        <div className="wrap hero__meta mono" aria-hidden="true">
-          <span>{site.signature}</span>
-          <span>IA · Software · Empresas</span>
-        </div>
         <ParticleWordmark text={site.wordmark} />
         <div className="wrap hero__copy">
           <h2 className="hero__sub">
