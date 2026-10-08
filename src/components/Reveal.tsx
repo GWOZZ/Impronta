@@ -16,7 +16,9 @@ export function Reveal() {
   useLayoutEffect(() => {
     const isNavigation = !first.current;
     first.current = false;
-    const els = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in):not(.reveal-wait)");
+    // Incluye los que ya esperan (.reveal-wait): si el efecto se vuelve a ejecutar
+    // (hot reload, Strict Mode), hay que observarlos de nuevo o quedarían ocultos.
+    const els = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)");
     if (!("IntersectionObserver" in window)) {
       els.forEach((el) => el.classList.add("is-in"));
       return;
@@ -39,7 +41,9 @@ export function Reveal() {
       return r.top < window.innerHeight && r.bottom > 0;
     };
     els.forEach((el) => {
-      if (inView(el)) {
+      if (el.classList.contains("reveal-wait")) {
+        io.observe(el);
+      } else if (inView(el)) {
         el.classList.add("is-in");
       } else {
         el.classList.add("reveal-wait");
