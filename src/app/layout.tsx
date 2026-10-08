@@ -36,7 +36,12 @@ export const viewport: Viewport = { themeColor: "#f1eee6" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-AR" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html
+      lang="es-AR"
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+      // El script de abajo agrega la clase "js" antes de hidratar.
+      suppressHydrationWarning
+    >
       <head>
         {/* Marca que hay JS antes del primer pintado: sin JS, todo el contenido queda visible. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />

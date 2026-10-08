@@ -37,6 +37,7 @@ export default function Nosotros() {
                     src={m.photo}
                     alt={`Retrato de ${m.name}`}
                     fill
+                    priority={i < 3}
                     sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
                   />
                   <span className="member__index mono" aria-hidden="true">

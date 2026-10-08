@@ -101,14 +101,16 @@ export function ContactForm({ products }: { products: ProductOption[] }) {
         <span className="mono muted">Consultas comerciales y técnicas</span>
       </div>
 
-      <div className="field">
-        <label htmlFor="name">Nombre de la empresa o responsable</label>
-        <input id="name" name="name" type="text" placeholder="Nombre o empresa" autoComplete="organization" required />
-      </div>
+      <div className="form__row">
+        <div className="field">
+          <label htmlFor="name">Nombre de la empresa o responsable</label>
+          <input id="name" name="name" type="text" placeholder="Nombre o empresa" autoComplete="organization" required />
+        </div>
 
-      <div className="field">
-        <label htmlFor="email">Email de contacto</label>
-        <input id="email" name="email" type="email" placeholder="correo@empresa.com" autoComplete="email" required />
+        <div className="field">
+          <label htmlFor="email">Email de contacto</label>
+          <input id="email" name="email" type="email" placeholder="correo@empresa.com" autoComplete="email" required />
+        </div>
       </div>
 
       <fieldset className="field">
@@ -137,7 +139,7 @@ export function ContactForm({ products }: { products: ProductOption[] }) {
         <textarea
           id="message"
           name="message"
-          rows={6}
+          rows={4}
           placeholder="Detalle del proyecto o necesidad…"
           value={message}
           onChange={(e) => setMessage(e.target.value)}

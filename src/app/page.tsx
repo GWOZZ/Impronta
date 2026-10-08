@@ -65,16 +65,15 @@ export default function Home() {
       {/* 2 · Catálogo */}
       <section className="section" aria-labelledby="catalogo">
         <div className="wrap">
-          <div className="section__head" data-reveal>
-            <p className="eyebrow">
-              <span className="eyebrow__num">01</span> Catálogo
-            </p>
-            <h2 id="catalogo" className="section__title">
-              Nuestros productos. <em>Empezá por el objetivo.</em>
-            </h2>
-          </div>
           <div data-reveal>
-            <IntentBuilder />
+            <IntentBuilder>
+              <p className="eyebrow">
+                <span className="eyebrow__num">01</span> Catálogo
+              </p>
+              <h2 id="catalogo" className="intent__title">
+                Nuestros productos. <em>Empezá por el objetivo.</em>
+              </h2>
+            </IntentBuilder>
           </div>
         </div>
       </section>
