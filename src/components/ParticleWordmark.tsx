@@ -2,7 +2,32 @@
 
 import { useEffect, useRef } from "react";
 
-type Particle = { x: number; y: number; hx: number; hy: number; vx: number; vy: number; a: boolean };
+type Particle = {
+  x: number;
+  y: number;
+  hx: number;
+  hy: number;
+  vx: number;
+  vy: number;
+  a: boolean;
+  /** Desplazamiento inicial y demora (ms) para la entrada "gentle". */
+  ox: number;
+  oy: number;
+  d: number;
+};
+
+/**
+ * Entrada del logo al abrir el sitio:
+ * - gentle: cada partícula aparece cerca de su lugar y se acomoda con una ola suave.
+ * - fade: el logo de puntos aparece en su lugar con un fundido.
+ * - none: el logo aparece ya armado.
+ * Se puede probar cada una con ?intro=gentle|fade|none.
+ */
+export type Intro = "gentle" | "fade" | "none";
+const INTROS: Intro[] = ["gentle", "fade", "none"];
+const GENTLE_MS = 1100;
+const FADE_MS = 900;
+const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
 /**
  * Dibuja el wordmark como una nube de partículas que se "genera" al cargar y
@@ -13,7 +38,7 @@ type Particle = { x: number; y: number; hx: number; hy: number; vx: number; vy: 
  * El canvas cubre el contenedor marcado con `data-particle-host` (el hero
  * entero), así las partículas pueden alejarse del logo sin recortarse.
  */
-export function ParticleWordmark({ text }: { text: string }) {
+export function ParticleWordmark({ text, intro = "gentle" }: { text: string; intro?: Intro }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -30,6 +55,11 @@ export function ParticleWordmark({ text }: { text: string }) {
     }
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const fromUrl = new URLSearchParams(window.location.search).get("intro") as Intro | null;
+    const mode: Intro = reduced ? "none" : fromUrl && INTROS.includes(fromUrl) ? fromUrl : intro;
+    let introStart = 0;
+    let introEnd = 0;
+    let introDone = mode === "none";
     const css = getComputedStyle(document.documentElement);
     const ink = css.getPropertyValue("--ink").trim() || "#121210";
     const accent = css.getPropertyValue("--accent").trim() || "#3b2bff";
@@ -83,30 +113,55 @@ export function ParticleWordmark({ text }: { text: string }) {
         }
       }
 
-      const step = Math.max(3, Math.round(parseFloat(hs.fontSize) / 46));
+      const fontPx = parseFloat(hs.fontSize);
+      const step = Math.max(3, Math.round(fontPx / 46));
       size = Math.max(1.4, step * 0.62);
       const data = o.getImageData(0, 0, off.width, off.height).data;
       const next: Particle[] = [];
+      let maxDelay = 0;
       for (let y = 0; y < off.height; y += step) {
         for (let x = 0; x < off.width; x += step) {
           if (data[(y * off.width + x) * 4 + 3] > 128) {
-            const start = reduced
-              ? { x, y }
-              : { x: Math.random() * w, y: Math.random() * h };
-            next.push({ x: start.x, y: start.y, hx: x, hy: y, vx: 0, vy: 0, a: Math.random() < 0.06 });
+            let ox = 0;
+            let oy = 0;
+            let d = 0;
+            if (!introDone && mode === "gentle") {
+              const angle = Math.random() * Math.PI * 2;
+              const dist = fontPx * (0.04 + Math.random() * 0.1);
+              ox = Math.cos(angle) * dist;
+              oy = Math.sin(angle) * dist;
+              // Ola de izquierda a derecha, con algo de azar.
+              d = (x / w) * 500 + Math.random() * 260;
+              maxDelay = Math.max(maxDelay, d);
+            }
+            next.push({ x: x + ox, y: y + oy, hx: x, hy: y, vx: 0, vy: 0, a: Math.random() < 0.06, ox, oy, d });
           }
         }
       }
       particles = next;
+      if (!introDone && !introStart) {
+        introStart = performance.now();
+        introEnd = mode === "gentle" ? maxDelay + GENTLE_MS : FADE_MS;
+      }
     };
 
-    const draw = () => {
+    const draw = (now = performance.now()) => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
+      const t = now - introStart;
+      if (!introDone && t >= introEnd) introDone = true;
+      const gentle = !introDone && mode === "gentle";
+      ctx.globalAlpha = !introDone && mode === "fade" ? easeOut(Math.min(1, Math.max(0, t / FADE_MS))) : 1;
       const r = Math.max(70, w * 0.07);
       const r2 = r * r;
       for (const p of particles) {
-        if (!reduced) {
+        if (gentle) {
+          // Entrada suave: se acerca a su lugar mientras aparece (sin física).
+          const e = easeOut(Math.min(1, Math.max(0, (t - p.d) / GENTLE_MS)));
+          p.x = p.hx + p.ox * (1 - e);
+          p.y = p.hy + p.oy * (1 - e);
+          ctx.globalAlpha = e;
+        } else if (!reduced) {
           const dx = p.x - mouse.x;
           const dy = p.y - mouse.y;
           const d2 = dx * dx + dy * dy;
@@ -128,8 +183,8 @@ export function ParticleWordmark({ text }: { text: string }) {
       }
     };
 
-    const loop = () => {
-      draw();
+    const loop = (now: number) => {
+      draw(now);
       raf = visible && !reduced ? requestAnimationFrame(loop) : 0;
     };
 
