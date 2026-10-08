@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function Productos() {
   return (
     <>
-      <section className="page-head">
+      <section className="page-head page-head--screen">
         <div className="wrap">
           <p className="eyebrow">Productos</p>
           <h1 className="page-head__title">
@@ -24,8 +24,8 @@ export default function Productos() {
           </h1>
           <p className="page-head__lede">{description}</p>
 
-          <nav className="picker" aria-label="Elegí el producto que querés activar">
-            <p className="mono picker__label">Elegí el producto que querés activar</p>
+          <nav className="picker" aria-label="Productos">
+            <p className="mono picker__label">Elegí un producto para ver el detalle</p>
             <ol className="picker__list">
               {products.map((p, i) => (
                 <li key={p.slug}>

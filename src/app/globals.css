@@ -495,15 +495,18 @@ em {
 /* ---------- Hero ---------- */
 
 /* Ocupa exactamente la primera pantalla: al abrir el sitio solo se ve el hero.
-   El contenido se centra en el espacio bajo el navbar (padding-top). */
+   El contenido se centra en el espacio bajo el navbar (padding-top).
+   --copy-gap separa el logo del subtítulo; el padding lo compensa (más arriba,
+   menos abajo) para que el logo no se mueva y el espacio salga de debajo de los botones. */
 .hero {
+  --copy-gap: clamp(28px, 3.4vw, 52px);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: 100vh;
   min-height: 100svh;
-  padding: 80px 0 72px;
+  padding: calc(72px + var(--copy-gap) / 2) 0 calc(80px - var(--copy-gap) / 2);
   overflow: hidden;
 }
 .hero__grid {
@@ -551,7 +554,7 @@ em {
   justify-items: center;
   gap: 22px;
   text-align: center;
-  margin-top: clamp(4px, 1vw, 16px);
+  margin-top: var(--copy-gap);
 }
 .hero__sub {
   font: 400 clamp(1.7rem, 3.6vw, 3rem) / 1.1 var(--f-display);
@@ -1074,6 +1077,16 @@ html:not(.js) .step__node {
 }
 .page-head .eyebrow::before {
   display: none;
+}
+/* Encabezado que ocupa la primera pantalla (Productos): el contenido que sigue
+   recién aparece al scrollear. */
+.page-head--screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: 88px 56px;
 }
 .page-head__title {
   margin-top: 18px;
