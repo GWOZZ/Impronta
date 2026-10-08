@@ -56,14 +56,12 @@
 
 html {
   -webkit-text-size-adjust: 100%;
-  scroll-behavior: smooth;
+  /* Sin scroll-behavior: smooth global: al cambiar de página tiene que volver arriba
+     al instante. Los links a anclas se suavizan en ScrollManager. */
   scroll-padding-top: 88px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   *,
   *::before,
   *::after {
@@ -750,39 +748,40 @@ em {
 .intent__out-body > div {
   display: grid;
   align-content: start;
-  gap: 14px;
-  padding: clamp(22px, 2.6vw, 36px);
+  gap: 12px;
+  padding: clamp(20px, 2.2vw, 30px) clamp(22px, 2.6vw, 34px);
 }
 .intent__objective {
   color: var(--accent);
 }
 .intent__name {
-  font: 400 clamp(1.9rem, 3vw, 2.8rem) / 1 var(--f-display);
+  font: 400 clamp(1.7rem, 2.4vw, 2.3rem) / 1.02 var(--f-display);
   letter-spacing: -0.015em;
   text-wrap: balance;
 }
 .intent__desc {
-  max-width: 50ch;
-  font-size: 17px;
+  max-width: 52ch;
+  font-size: 16px;
   color: var(--muted);
 }
 .intent__metric {
   border-top: 1px solid var(--line);
   background: var(--paper-2);
-  gap: 10px !important;
+  gap: 8px !important;
 }
+/* Valor a la izquierda (puede ocupar dos líneas) y botón fijo a la derecha. */
 .intent__metric-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 20px;
 }
 .intent__metric-label {
   color: var(--muted);
 }
 .intent__metric-value {
-  font: 400 clamp(2rem, 3.4vw, 3.1rem) / 1 var(--f-display);
+  font: 400 clamp(1.7rem, 2.6vw, 2.4rem) / 1 var(--f-display);
+  text-wrap: balance;
   letter-spacing: -0.02em;
   color: var(--ink);
 }
@@ -799,10 +798,10 @@ em {
   list-style: none;
 }
 .tags li {
-  padding: 6px 12px;
+  padding: 4px 11px;
   border: 1px solid var(--border);
   border-radius: 999px;
-  font-size: 14px;
+  font-size: 13.5px;
 }
 
 @media (max-width: 960px) {
@@ -922,11 +921,11 @@ html:not(.js) .step__node {
 }
 .clients__head {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
   margin-bottom: 48px;
+  text-align: center;
 }
 .clients__title {
   font: 400 clamp(1.8rem, 3.4vw, 2.8rem) / 1.05 var(--f-display);
@@ -1071,6 +1070,9 @@ html:not(.js) .step__node {
 }
 .page-head .wrap {
   position: relative;
+}
+.page-head .eyebrow::before {
+  display: none;
 }
 .page-head__title {
   margin-top: 18px;
@@ -1695,6 +1697,12 @@ html:not(.js) .step__node {
 @media (max-width: 520px) {
   body {
     font-size: 16px;
+  }
+  .intent__metric-row {
+    grid-template-columns: 1fr;
+  }
+  .intent__metric .btn {
+    justify-self: start;
   }
   .hero__meta {
     display: none;

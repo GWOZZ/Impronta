@@ -3,6 +3,7 @@ import { Instrument_Serif, Inter_Tight, JetBrains_Mono } from "next/font/google"
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Reveal } from "@/components/Reveal";
+import { ScrollManager } from "@/components/ScrollManager";
 import { site } from "@/lib/content";
 import "./globals.css";
 
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main">{children}</main>
         <Footer />
         <Reveal />
+        <ScrollManager />
       </body>
     </html>
   );
