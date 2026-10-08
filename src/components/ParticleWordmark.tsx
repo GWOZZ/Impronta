@@ -9,6 +9,9 @@ type Particle = { x: number; y: number; hx: number; hy: number; vx: number; vy: 
  * se dispersa con el cursor. El <h1> real queda debajo (para SEO, lectores
  * de pantalla y como fallback sin JS); se vuelve transparente cuando el
  * canvas está listo.
+ *
+ * El canvas cubre el contenedor marcado con `data-particle-host` (el hero
+ * entero), así las partículas pueden alejarse del logo sin recortarse.
  */
 export function ParticleWordmark({ text }: { text: string }) {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -19,6 +22,7 @@ export function ParticleWordmark({ text }: { text: string }) {
     const canvas = canvasRef.current;
     const heading = wrap?.querySelector("h1");
     if (!wrap || !canvas || !heading) return;
+    const host = wrap.closest<HTMLElement>("[data-particle-host]") ?? wrap;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
@@ -37,7 +41,7 @@ export function ParticleWordmark({ text }: { text: string }) {
     const mouse = { x: -9999, y: -9999 };
 
     const build = () => {
-      const rect = wrap.getBoundingClientRect();
+      const rect = host.getBoundingClientRect();
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       w = rect.width;
       h = rect.height;
@@ -85,7 +89,7 @@ export function ParticleWordmark({ text }: { text: string }) {
           if (data[(y * off.width + x) * 4 + 3] > 128) {
             const start = reduced
               ? { x, y }
-              : { x: Math.random() * w, y: h * (0.5 + (Math.random() - 0.5) * 1.6) };
+              : { x: Math.random() * w, y: Math.random() * h };
             next.push({ x: start.x, y: start.y, hx: x, hy: y, vx: 0, vy: 0, a: Math.random() < 0.06 });
           }
         }
@@ -141,15 +145,20 @@ export function ParticleWordmark({ text }: { text: string }) {
       mouse.y = -9999;
     };
 
+    // Reconstruye si cambia el tamaño del hero (ventana, o el subtítulo que pasa a dos líneas).
     let resizeTimer = 0;
-    const onResize = () => {
+    let lastSize = "";
+    const ro = new ResizeObserver(() => {
+      const size = `${host.clientWidth}x${host.clientHeight}`;
+      if (size === lastSize) return;
+      lastSize = size;
       window.clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
         build();
         draw();
         start();
       }, 150);
-    };
+    });
 
     const io = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
@@ -159,22 +168,24 @@ export function ParticleWordmark({ text }: { text: string }) {
     let cancelled = false;
     document.fonts.ready.then(() => {
       if (cancelled) return;
+      lastSize = `${host.clientWidth}x${host.clientHeight}`;
       build();
       draw();
       start();
-      io.observe(wrap);
-      wrap.addEventListener("pointermove", onMove);
-      wrap.addEventListener("pointerleave", onLeave);
-      window.addEventListener("resize", onResize);
+      io.observe(host);
+      ro.observe(host);
+      host.addEventListener("pointermove", onMove);
+      host.addEventListener("pointerleave", onLeave);
     });
 
     return () => {
       cancelled = true;
       cancelAnimationFrame(raf);
+      window.clearTimeout(resizeTimer);
       io.disconnect();
-      wrap.removeEventListener("pointermove", onMove);
-      wrap.removeEventListener("pointerleave", onLeave);
-      window.removeEventListener("resize", onResize);
+      ro.disconnect();
+      host.removeEventListener("pointermove", onMove);
+      host.removeEventListener("pointerleave", onLeave);
     };
   }, [text]);
 

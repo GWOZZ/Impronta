@@ -33,7 +33,7 @@ export default function Home() {
       />
 
       {/* 1 · Hero */}
-      <section className="hero">
+      <section className="hero" data-particle-host>
         <div className="hero__grid" aria-hidden="true" />
         <ParticleWordmark text={site.wordmark} />
         <div className="wrap hero__copy">

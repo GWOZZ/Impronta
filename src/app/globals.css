@@ -489,8 +489,7 @@ em {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 100svh;
-  padding: 120px 0 72px;
+  padding: clamp(92px, 7vw, 104px) 0 clamp(80px, 8vw, 112px);
   overflow: hidden;
 }
 .hero__grid {
@@ -502,16 +501,18 @@ em {
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 75%);
   pointer-events: none;
 }
+/* Sin position: el canvas se ubica respecto del hero completo (data-particle-host). */
 .wordmark {
-  position: relative;
   width: 100%;
   touch-action: pan-y;
 }
 .wordmark__text {
-  font: 400 clamp(6.2rem, 27vw, 25rem) / 0.95 var(--f-display);
+  /* "ongenia" no tiene ascendentes: la línea se ajusta a la altura de la x
+     (más el punto de la i y la cola de la g), sin aire vacío arriba. */
+  font: 400 clamp(6.2rem, 27vw, 25rem) / 0.72 var(--f-display);
   letter-spacing: -0.035em;
   text-align: center;
-  padding-block: 0.06em 0.12em;
+  padding-block: 0.05em 0.2em;
 }
 .wordmark.is-live .wordmark__text {
   color: transparent;
@@ -519,10 +520,13 @@ em {
 .wordmark__canvas {
   position: absolute;
   inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .hero__copy {
   position: relative;
+  z-index: 1;
   display: grid;
   justify-items: center;
   gap: 22px;
