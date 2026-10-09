@@ -34,9 +34,9 @@ export type Intro = "expand" | "gentle" | "fade" | "none";
 const INTROS: Intro[] = ["expand", "gentle", "fade", "none"];
 const GENTLE_MS = 1100;
 const FADE_MS = 900;
-// Tiempos de "expand" (ms): aparece "ia", pausa breve, se abre.
-const EXPAND_IN = 450;
-const EXPAND_SPLIT = 800;
+// Tiempos de "expand" (ms): aparece "ia" y se abre casi enseguida.
+const EXPAND_IN = 350;
+const EXPAND_SPLIT = 120;
 const EXPAND_MOVE = 900;
 const EXPAND_MID = 800;
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -96,6 +96,12 @@ export function ParticleWordmark({ text, intro = "expand" }: { text: string; int
       canvas.height = Math.round(h * dpr);
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
+      // Sin tamaño (pestaña o iframe oculto) no hay nada que muestrear: el ResizeObserver
+      // reconstruye cuando el hero tenga medidas, y la entrada arranca recién ahí.
+      if (w < 1 || h < 1) {
+        particles = [];
+        return;
+      }
 
       // Renderiza el texto fuera de pantalla letra por letra, en la posición exacta en
       // que el navegador dibuja cada glifo del <h1> (incluye letter-spacing y kerning).
@@ -147,14 +153,15 @@ export function ParticleWordmark({ text, intro = "expand" }: { text: string; int
       const shiftLast = n ? compactLeft + firstW - lefts[n - 1] : 0;
 
       const fontPx = parseFloat(hs.fontSize);
-      const step = Math.max(3, Math.round(fontPx / 46));
+      // Paso de muestreo proporcional a la fuente (no entero, para no saltar de a 1px entre tamaños).
+      const step = Math.max(2.5, fontPx / 85);
       size = Math.max(1.4, step * 0.62);
       const data = o.getImageData(0, 0, off.width, off.height).data;
       const next: Particle[] = [];
       let maxDelay = 0;
       for (let y = 0; y < off.height; y += step) {
         for (let x = 0; x < off.width; x += step) {
-          if (data[(y * off.width + x) * 4 + 3] > 128) {
+          if (data[(Math.floor(y) * off.width + Math.floor(x)) * 4 + 3] > 128) {
             let ox = 0;
             let oy = 0;
             let d = 0;
