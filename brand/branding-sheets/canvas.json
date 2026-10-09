@@ -1,0 +1,68 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "A-la-i.dc.html": {
+      "h": 3300,
+      "title": "A · La i",
+      "w": 1440,
+      "x": 1520,
+      "y": 0
+    },
+    "B-punto.dc.html": {
+      "h": 3300,
+      "title": "B · El punto",
+      "w": 1440,
+      "x": 3040,
+      "y": 0
+    },
+    "C-particulas.dc.html": {
+      "h": 3300,
+      "title": "C · La i de partículas",
+      "w": 1440,
+      "x": 4560,
+      "y": 0
+    },
+    "D-azul.dc.html": {
+      "h": 3300,
+      "title": "D · La i en azul",
+      "w": 1440,
+      "x": 6080,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "h": 6900,
+      "title": "Sistema de marca",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-09T18:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "titulo": {
+      "kind": "title1",
+      "maxW": 7520,
+      "text": "Impronta — sistema de marca y cuatro propuestas de favicon",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "A-la-i.dc.html",
+    "B-punto.dc.html",
+    "C-particulas.dc.html",
+    "D-azul.dc.html"
+  ],
+  "pages": [],
+  "title": "Impronta — Branding sheets"
+}

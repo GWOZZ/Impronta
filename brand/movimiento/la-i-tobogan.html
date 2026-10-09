@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La i tobogán</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: escenario con el ícono a la izquierda, la explicación a la derecha; en mobile se apilan. */
+:root {
+  --bg: #f1eee6;
+  --panel: #e9e5da;
+  --fg: #121210;
+  --muted: #67635a;
+  --line: rgba(18, 18, 16, 0.14);
+  --accent: #4a3aff;
+  --signal: #d6ff3d;
+  --tile: #121210;
+  --tile-stroke: transparent;
+  --f-display: "Instrument Serif", "Times New Roman", serif;
+  --f-sans: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121210; --panel: #1d1d1a; --fg: #f1eee6; --muted: #a7a396;
+    --line: rgba(241, 238, 230, 0.16); --accent: #4a3aff; --signal: #d6ff3d;
+    --tile: #1d1d1a; --tile-stroke: rgba(241, 238, 230, 0.28); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121210; --panel: #1d1d1a; --fg: #f1eee6; --muted: #a7a396;
+  --line: rgba(241, 238, 230, 0.16); --accent: #4a3aff; --signal: #d6ff3d;
+  --tile: #1d1d1a; --tile-stroke: rgba(241, 238, 230, 0.28); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 400 16px/1.55 var(--f-sans); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 48px); padding-block: clamp(28px, 5vw, 64px); display: grid; gap: clamp(24px, 4vw, 40px); }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font: 500 12px/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+h1 { margin: 12px 0 0; font: 400 clamp(3rem, 8vw, 5.6rem)/0.92 var(--f-display); letter-spacing: -0.02em; text-wrap: balance; }
+h1 em, h2 em { color: var(--accent); }
+.lede { margin: 14px 0 0; max-width: 60ch; color: var(--muted); font-size: 17px; }
+.grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); align-items: start; }
+@media (max-width: 820px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.stage { position: relative; width: 100%; max-width: 560px; border-radius: 18px; background: var(--panel); overflow: hidden; }
+.stage canvas { display: block; width: 100%; aspect-ratio: 52 / 60; }
+.page { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 10%; color: #f1eee6; opacity: 0; pointer-events: none; transition: opacity 0.35s; }
+.page.show { opacity: 1; }
+.page .eyebrow { color: rgba(241, 238, 230, 0.75); }
+.page .eyebrow::before { background: var(--signal); }
+.page h2 { margin: 0; font: 400 clamp(2.2rem, 6vw, 3.6rem)/1 var(--f-display); letter-spacing: -0.02em; }
+.page h2 em { color: var(--signal); }
+.page p { margin: 0; color: rgba(241, 238, 230, 0.8); max-width: 30ch; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; }
+button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 20px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--fg); font: 500 15px/1.2 var(--f-sans); cursor: pointer; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button:hover { border-color: var(--fg); }
+button.primary:hover { background: #3426e6; border-color: #3426e6; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.toggle { display: inline-flex; align-items: center; gap: 8px; margin-left: 4px; font: 500 12px/1 var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); cursor: pointer; }
+.toggle input { width: 16px; height: 16px; accent-color: var(--accent); }
+.notes { display: grid; gap: 28px; min-width: 0; }
+.notes h2 { margin: 0 0 12px; font: 400 2rem/1 var(--f-display); }
+ol.steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; counter-reset: s; }
+ol.steps li { display: grid; grid-template-columns: 2.2em 1fr; gap: 6px; counter-increment: s; }
+ol.steps li::before { content: counter(s, decimal-leading-zero); font: 500 13px/1.7 var(--f-mono); color: var(--accent); }
+.small { margin: 0; color: var(--muted); font-size: 14px; max-width: 58ch; }
+</style>
+
+<main class="wrap">
+  <header>
+    <span class="eyebrow">Impronta · Movimiento</span>
+    <h1>La i <em>tobogán</em></h1>
+    <p class="lede">El punto del favicon toma peso, cae sobre la i y usa su banderín como tobogán. Su caída abre la transición entre pantallas.</p>
+  </header>
+
+  <section class="grid" aria-label="Prototipo">
+    <div>
+      <div class="stage" id="stage">
+        <canvas id="canvas" role="img" aria-label="Ícono de Impronta: el punto de la i cae y rueda por el banderín"></canvas>
+        <div class="page" id="page" aria-hidden="true">
+          <span class="eyebrow">Servicios</span>
+          <h2>Branding, software y <em>automatizaciones</em></h2>
+          <p>La pantalla que abre la transición.</p>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="primary" id="play" type="button">Reproducir</button>
+        <label class="toggle" for="slow"><input type="checkbox" id="slow"> Cámara lenta</label>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div>
+        <h2>Cómo se mueve</h2>
+        <ol class="steps">
+          <li><span>El punto tiembla y se suelta.</span></li>
+          <li><span>Cae sobre el banderín de la i y rueda por su curva, la del glifo de Instrument Serif.</span></li>
+          <li><span>Toma velocidad, se despega en la punta y sale volando con gravedad.</span></li>
+          <li><span>Su caída abre un círculo ultramar que tapa la pantalla y da paso a la siguiente.</span></li>
+          <li><span>Al volver, la pantalla se cierra en el punto, que cae de nuevo en su lugar.</span></li>
+        </ol>
+      </div>
+      <p class="small">El ícono es el favicon real: la i de Instrument Serif agrandada y cortada por el borde, con el punto acercado. Con movimiento reducido no arranca sola.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  // Geometría del favicon (grilla de 32).
+  const STEM = new Path2D("M10.69 56.16Q9.55 56.16 9.55 55.32Q9.55 54.64 10.54 54.41L11.45 54.26Q13.35 53.96 13.88 53.31Q14.42 52.66 14.42 51.07L14.42 25.53Q14.42 24.16 14.0 23.67Q13.58 23.18 12.52 23.02L10.92 22.8Q9.93 22.72 9.93 21.96Q9.93 21.35 11.15 21.12Q13.5 20.74 14.95 19.91Q16.39 19.07 17.76 17.86Q18.44 17.17 18.9 17.17Q19.58 17.17 19.58 18.08L19.58 51.07Q19.58 52.66 20.04 53.34Q20.5 54.03 21.79 54.18L23.69 54.41Q24.52 54.56 24.52 55.25Q24.52 56.16 23.38 56.16Z");
+  const DOT = new Path2D("M17.08 14.48Q15.48 14.48 14.38 13.34Q13.28 12.2 13.28 10.45Q13.28 8.7 14.38 7.6Q15.48 6.5 17.08 6.5Q18.67 6.5 19.73 7.6Q20.8 8.7 20.8 10.45Q20.8 12.2 19.73 13.34Q18.67 14.48 17.08 14.48Z");
+  const REST = { x: 17.04, y: 10.49 };
+  const R = 3.9;
+  const G = 70; // gravedad, en unidades de la grilla por segundo²
+
+  // Borde superior del banderín, de derecha a izquierda, y la vuelta por la punta.
+  const QUADS = [
+    [[19.58, 18.08], [19.58, 17.17], [18.9, 17.17]],
+    [[18.9, 17.17], [18.44, 17.17], [17.76, 17.86]],
+    [[17.76, 17.86], [16.39, 19.07], [14.95, 19.91]],
+    [[14.95, 19.91], [13.5, 20.74], [11.15, 21.12]],
+    [[11.15, 21.12], [9.93, 21.35], [9.93, 21.96]],
+    [[9.93, 21.96], [9.93, 22.72], [10.92, 22.8]],
+  ];
+  const surf = [];
+  QUADS.forEach(([a, c, b], qi) => {
+    for (let i = qi === 0 ? 0 : 1; i <= 16; i++) {
+      const t = i / 16, u = 1 - t;
+      surf.push({ x: u * u * a[0] + 2 * u * t * c[0] + t * t * b[0], y: u * u * a[1] + 2 * u * t * c[1] + t * t * b[1] });
+    }
+  });
+  // Recorrido del centro del punto: la superficie desplazada un radio hacia afuera.
+  const path = surf.map((p, i) => {
+    const a = surf[Math.max(0, i - 1)], b = surf[Math.min(surf.length - 1, i + 1)];
+    const dx = b.x - a.x, dy = b.y - a.y, l = Math.hypot(dx, dy) || 1;
+    const nx = -dy / l, ny = dx / l;
+    return { x: p.x + nx * R, y: p.y + ny * R, nx, ny };
+  });
+  const len = [0];
+  for (let i = 1; i < path.length; i++) len.push(len[i - 1] + Math.hypot(path[i].x - path[i - 1].x, path[i].y - path[i - 1].y));
+  const total = len[len.length - 1];
+  // Punta del banderín: fin del borde superior, antes de la vuelta por abajo.
+  const tipS = len[16 + 16 * 4];
+
+  function at(s) {
+    let i = 1;
+    while (i < len.length - 1 && len[i] < s) i++;
+    const a = path[i - 1], b = path[i], seg = len[i] - len[i - 1] || 1;
+    const t = Math.min(1, Math.max(0, (s - len[i - 1]) / seg));
+    const tx = (b.x - a.x) / seg, ty = (b.y - a.y) / seg;
+    // Curvatura hacia afuera (positiva en lo convexo): cambio de la tangente proyectado en la normal.
+    const c = path[Math.min(path.length - 1, i + 1)], seg2 = (len[Math.min(len.length - 1, i + 1)] - len[i]) || 1;
+    const t2x = (c.x - b.x) / seg2, t2y = (c.y - b.y) / seg2;
+    const kappa = -((t2x - tx) * b.nx + (t2y - ty) * b.ny) / ((seg + seg2) / 2);
+    return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, tx, ty, nx: b.nx, ny: b.ny, kappa };
+  }
+
+  // Dónde aterriza el punto al caer en vertical desde su lugar.
+  let landS = 0;
+  {
+    let best = Infinity;
+    for (let i = 0; i < path.length; i++) {
+      if (path[i].y > 20) continue;
+      const d = Math.abs(path[i].x - REST.x);
+      if (d < best) { best = d; landS = len[i]; }
+    }
+  }
+
+  // Escenario: mundo de 52 × 60 unidades, con el ícono arriba.
+  const VIEW = { x: -10, y: -8, w: 52, h: 60 };
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  const pageEl = document.getElementById("page");
+  const slow = document.getElementById("slow");
+  let scale = 1, dpr = 1;
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = canvas.clientWidth;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(w * (VIEW.h / VIEW.w) * dpr);
+    scale = canvas.width / VIEW.w;
+    draw();
+  }
+
+  const easeOutBounce = (t) => {
+    const n = 7.5625, d = 2.75;
+    if (t < 1 / d) return n * t * t;
+    if (t < 2 / d) return n * (t -= 1.5 / d) * t + 0.75;
+    if (t < 2.5 / d) return n * (t -= 2.25 / d) * t + 0.9375;
+    return n * (t -= 2.625 / d) * t + 0.984375;
+  };
+  const easeInCubic = (t) => t * t * t;
+  const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+  const state = { phase: "rest", t: 0, x: REST.x, y: REST.y, vx: 0, vy: 0, s: 0, v: 0, squash: 0, wipe: null };
+  const maxR = Math.hypot(VIEW.w, VIEW.h);
+
+  function start() {
+    if (state.phase !== "rest") return;
+    Object.assign(state, { phase: "tremble", t: 0, x: REST.x, y: REST.y, vx: 0, vy: 0, s: 0, v: 0, squash: 0, wipe: null });
+    last = performance.now();
+    if (!raf) raf = requestAnimationFrame(loop);
+  }
+
+  function step(dt) {
+    state.t += dt;
+    if (state.squash > 0) state.squash = Math.max(0, state.squash - dt);
+    switch (state.phase) {
+      case "tremble": {
+        const k = 1 - state.t / 0.45;
+        state.x = REST.x + Math.sin(state.t * 70) * 0.28 * k;
+        if (state.t >= 0.45) { state.x = REST.x; state.phase = "fall"; state.t = 0; }
+        break;
+      }
+      case "fall": {
+        const p = at(landS);
+        state.vy += G * dt;
+        state.y += state.vy * dt;
+        state.x += (p.x - state.x) * Math.min(1, dt * 10);
+        if (state.y >= p.y) {
+          state.y = p.y;
+          state.s = landS;
+          state.v = Math.max(2, state.vy * Math.max(0, p.ty) * 0.8);
+          state.squash = 0.12;
+          state.phase = "roll"; state.t = 0;
+        }
+        break;
+      }
+      case "roll": {
+        const p = at(state.s);
+        state.v += G * p.ty * dt;
+        state.v *= 1 - 0.12 * dt;
+        state.s += state.v * dt;
+        const q = at(state.s);
+        state.x = q.x; state.y = q.y;
+        // Sobre el banderín la gravedad lo mantiene pegado. En la punta la curva pide más
+        // fuerza centrípeta que la que da la gravedad, así que sale disparado con la
+        // dirección que trae.
+        const needs = state.v * state.v * q.kappa;
+        const holds = G * -q.ny;
+        if (state.s >= tipS || state.s >= total || (needs > holds && state.s > tipS - 3)) {
+          state.vx = state.v * q.tx; state.vy = state.v * q.ty;
+          state.phase = "fly"; state.t = 0;
+        }
+        break;
+      }
+      case "fly": {
+        state.vy += G * dt;
+        state.x += state.vx * dt;
+        state.y += state.vy * dt;
+        // Al pasar el borde del ícono, la caída abre la transición.
+        if (!state.wipe && state.y > 33) state.wipe = { x: state.x, y: state.y, t: 0 };
+        if (state.wipe) {
+          state.wipe.t += dt;
+          if (state.wipe.t > 0.42) pageEl.classList.add("show");
+          if (state.wipe.t >= 0.6) { state.phase = "hold"; state.t = 0; }
+        }
+        break;
+      }
+      case "hold": {
+        if (state.t >= 1.5) { pageEl.classList.remove("show"); state.phase = "close"; state.t = 0; }
+        break;
+      }
+      case "close": {
+        if (state.t >= 0.65) { state.wipe = null; state.phase = "drop"; state.t = 0; }
+        break;
+      }
+      case "drop": {
+        const from = -1;
+        const k = Math.min(1, state.t / 0.9);
+        state.x = REST.x;
+        state.y = from + (REST.y - from) * easeOutBounce(k);
+        if (k >= 1) { state.y = REST.y; state.phase = "rest"; state.t = 0; }
+        break;
+      }
+    }
+  }
+
+  function draw() {
+    const css = getComputedStyle(document.documentElement);
+    const tile = css.getPropertyValue("--tile").trim() || "#121210";
+    const tileStroke = css.getPropertyValue("--tile-stroke").trim();
+    const accent = css.getPropertyValue("--accent").trim() || "#4a3aff";
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.setTransform(scale, 0, 0, scale, -VIEW.x * scale, -VIEW.y * scale);
+
+    // Ícono: fondo y tronco recortado por el borde.
+    ctx.beginPath();
+    ctx.roundRect(0.5, 0.5, 31, 31, 7.5);
+    ctx.fillStyle = tile;
+    ctx.fill();
+    if (tileStroke && tileStroke !== "transparent") { ctx.lineWidth = 1 / scale * dpr; ctx.strokeStyle = tileStroke; ctx.stroke(); }
+    ctx.save();
+    ctx.clip();
+    ctx.fillStyle = "#f1eee6";
+    ctx.fill(STEM);
+    ctx.restore();
+
+    // Punto, con un aplastado breve al aterrizar.
+    const hidden = state.phase === "hold" || state.phase === "close";
+    if (!hidden) {
+      const sq = state.squash > 0 ? Math.sin((state.squash / 0.12) * Math.PI) * 0.18 : 0;
+      ctx.save();
+      ctx.translate(state.x, state.y + R);
+      ctx.scale(1 + sq, 1 - sq);
+      ctx.translate(-REST.x, -REST.y - R);
+      ctx.fillStyle = accent;
+      ctx.fill(DOT);
+      ctx.restore();
+    }
+
+    // Transición: el círculo ultramar se abre desde la caída y se cierra en el punto.
+    if (state.wipe || state.phase === "hold" || state.phase === "close") {
+      let cx, cy, r;
+      if (state.phase === "close") {
+        const k = easeInOut(Math.min(1, state.t / 0.65));
+        cx = state.wipe.x + (REST.x - state.wipe.x) * k;
+        cy = state.wipe.y + (-1 - state.wipe.y) * k;
+        r = maxR + (R - maxR) * k;
+      } else {
+        const k = state.phase === "hold" ? 1 : easeInCubic(Math.min(1, state.wipe.t / 0.6));
+        cx = state.wipe.x; cy = state.wipe.y; r = R + (maxR * 1.3 - R) * k;
+        if (state.phase === "hold") r = maxR * 1.3;
+      }
+      ctx.beginPath();
+      ctx.arc(cx, cy, Math.max(R, r), 0, Math.PI * 2);
+      ctx.fillStyle = accent;
+      ctx.fill();
+    }
+  }
+
+  let raf = 0, last = 0;
+  function loop(now) {
+    const dt = Math.min(1 / 30, (now - last) / 1000) * (slow.checked ? 0.3 : 1);
+    last = now;
+    step(dt);
+    draw();
+    raf = state.phase === "rest" ? 0 : requestAnimationFrame(loop);
+  }
+
+  document.getElementById("play").addEventListener("click", start);
+  new ResizeObserver(resize).observe(canvas);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", draw);
+  new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  resize();
+  document.fonts && document.fonts.ready.then(draw);
+
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduced) setTimeout(start, 700);
+})();
+</script>
