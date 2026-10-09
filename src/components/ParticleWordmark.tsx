@@ -3,10 +3,11 @@
 import { useEffect, useRef } from "react";
 
 type Particle = {
-  x: number;
-  y: number;
   hx: number;
   hy: number;
+  /** Desplazamiento por la física (cursor), relativo a donde la entrada ubica la partícula. */
+  sx: number;
+  sy: number;
   vx: number;
   vy: number;
   a: boolean;
@@ -27,16 +28,17 @@ type Particle = {
  * - fade: el logo de puntos aparece en su lugar con un fundido.
  * - none: el logo aparece ya armado.
  * Se puede probar cada una con ?intro=expand|gentle|fade|none.
+ * La física del cursor funciona desde el primer cuadro, también durante la entrada.
  */
 export type Intro = "expand" | "gentle" | "fade" | "none";
 const INTROS: Intro[] = ["expand", "gentle", "fade", "none"];
 const GENTLE_MS = 1100;
 const FADE_MS = 900;
-// Tiempos de "expand" (ms): aparece "ia", pausa, se abre.
-const EXPAND_IN = 700;
-const EXPAND_SPLIT = 1400;
-const EXPAND_MOVE = 1100;
-const EXPAND_MID = 1000;
+// Tiempos de "expand" (ms): aparece "ia", pausa breve, se abre.
+const EXPAND_IN = 450;
+const EXPAND_SPLIT = 800;
+const EXPAND_MOVE = 900;
+const EXPAND_MID = 800;
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
@@ -166,7 +168,7 @@ export function ParticleWordmark({ text, intro = "expand" }: { text: string; int
                 // Las letras del medio salen del centro hacia afuera.
                 ox = (cx - x) * 0.9;
                 const charCenter = (lefts[c] + rights[c]) / 2;
-                d = (Math.abs(charCenter - cx) / half) * 380 + Math.random() * 120;
+                d = (Math.abs(charCenter - cx) / half) * 300 + Math.random() * 100;
                 maxDelay = Math.max(maxDelay, d);
               }
             } else if (!introDone && mode === "gentle") {
@@ -178,7 +180,7 @@ export function ParticleWordmark({ text, intro = "expand" }: { text: string; int
               d = (x / w) * 500 + Math.random() * 260;
               maxDelay = Math.max(maxDelay, d);
             }
-            next.push({ x: x + ox, y: y + oy, hx: x, hy: y, vx: 0, vy: 0, a: Math.random() < 0.06, ox, oy, d, edge });
+            next.push({ hx: x, hy: y, sx: 0, sy: 0, vx: 0, vy: 0, a: Math.random() < 0.06, ox, oy, d, edge });
           }
         }
       }
@@ -201,23 +203,37 @@ export function ParticleWordmark({ text, intro = "expand" }: { text: string; int
       if (!introDone && t >= introEnd) introDone = true;
       const gentle = !introDone && mode === "gentle";
       const expand = !introDone && mode === "expand";
-      ctx.globalAlpha = !introDone && mode === "fade" ? easeOut(Math.min(1, Math.max(0, t / FADE_MS))) : 1;
+      const fade = !introDone && mode === "fade" ? easeOut(clamp01(t / FADE_MS)) : 1;
       const r = Math.max(70, w * 0.07);
       const r2 = r * r;
       for (const p of particles) {
+        // 1. Dónde y cómo la ubica la entrada (sin física).
+        let bx = p.hx;
+        let alpha = fade;
+        let accentMix = 0; // 1 = color de acento, 0 = color normal
         if (expand) {
-          drawExpand(p, t);
-          continue;
+          if (p.edge) {
+            alpha = easeOut(clamp01(t / EXPAND_IN));
+            bx += p.ox * (1 - easeInOut(clamp01((t - EXPAND_SPLIT) / EXPAND_MOVE)));
+            accentMix = 1 - clamp01((t - EXPAND_SPLIT - 300) / 600);
+          } else {
+            const k = easeOut(clamp01((t - EXPAND_SPLIT - 150 - p.d) / EXPAND_MID));
+            bx += p.ox * (1 - k);
+            alpha = k;
+          }
         }
+        let by = p.hy;
         if (gentle) {
-          // Entrada suave: se acerca a su lugar mientras aparece (sin física).
-          const e = easeOut(Math.min(1, Math.max(0, (t - p.d) / GENTLE_MS)));
-          p.x = p.hx + p.ox * (1 - e);
-          p.y = p.hy + p.oy * (1 - e);
-          ctx.globalAlpha = e;
-        } else if (!reduced) {
-          const dx = p.x - mouse.x;
-          const dy = p.y - mouse.y;
+          const e = easeOut(clamp01((t - p.d) / GENTLE_MS));
+          bx += p.ox * (1 - e);
+          by += p.oy * (1 - e);
+          alpha = e;
+        }
+
+        // 2. La física del cursor suma un desplazamiento que vuelve a cero con un resorte.
+        if (!reduced) {
+          const dx = bx + p.sx - mouse.x;
+          const dy = by + p.sy - mouse.y;
           const d2 = dx * dx + dy * dy;
           if (d2 < r2) {
             const f = (1 - d2 / r2) * 6;
@@ -225,44 +241,27 @@ export function ParticleWordmark({ text, intro = "expand" }: { text: string; int
             p.vx += (dx / d) * f;
             p.vy += (dy / d) * f;
           }
-          p.vx += (p.hx - p.x) * 0.045;
-          p.vy += (p.hy - p.y) * 0.045;
+          p.vx -= p.sx * 0.045;
+          p.vy -= p.sy * 0.045;
           p.vx *= 0.82;
           p.vy *= 0.82;
-          p.x += p.vx;
-          p.y += p.vy;
+          p.sx += p.vx;
+          p.sy += p.vy;
         }
-        ctx.fillStyle = p.a ? accent : ink;
-        ctx.fillRect(p.x - size / 2, p.y - size / 2, size, size);
-      }
-    };
 
-    // Un cuadro de la entrada "expand" para una partícula (sin física).
-    const drawExpand = (p: Particle, t: number) => {
-      let alpha: number;
-      let accentMix = 0; // 1 = color de acento, 0 = color normal
-      if (p.edge) {
-        alpha = easeOut(clamp01(t / EXPAND_IN));
-        const k = easeInOut(clamp01((t - EXPAND_SPLIT) / EXPAND_MOVE));
-        p.x = p.hx + p.ox * (1 - k);
-        accentMix = 1 - clamp01((t - EXPAND_SPLIT - 400) / 700);
-      } else {
-        const k = easeOut(clamp01((t - EXPAND_SPLIT - 150 - p.d) / EXPAND_MID));
-        p.x = p.hx + p.ox * (1 - k);
-        alpha = k;
-      }
-      p.y = p.hy;
-      if (alpha <= 0) return;
-      const base = p.a ? accent : ink;
-      if (accentMix < 1) {
-        ctx.globalAlpha = alpha * (1 - accentMix);
-        ctx.fillStyle = base;
-        ctx.fillRect(p.x - size / 2, p.y - size / 2, size, size);
-      }
-      if (accentMix > 0) {
-        ctx.globalAlpha = alpha * accentMix;
-        ctx.fillStyle = accent;
-        ctx.fillRect(p.x - size / 2, p.y - size / 2, size, size);
+        if (alpha <= 0) continue;
+        const x = bx + p.sx - size / 2;
+        const y = by + p.sy - size / 2;
+        if (accentMix < 1) {
+          ctx.globalAlpha = alpha * (1 - accentMix);
+          ctx.fillStyle = p.a ? accent : ink;
+          ctx.fillRect(x, y, size, size);
+        }
+        if (accentMix > 0) {
+          ctx.globalAlpha = alpha * accentMix;
+          ctx.fillStyle = accent;
+          ctx.fillRect(x, y, size, size);
+        }
       }
       ctx.globalAlpha = 1;
     };
