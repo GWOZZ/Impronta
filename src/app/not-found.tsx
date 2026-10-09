@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ParticleWordmark } from "@/components/ParticleWordmark";
 import { Arrow } from "@/components/Arrow";
 
 export const metadata: Metadata = {
   title: "Página no encontrada",
 };
 
-// Mismo hero que el inicio: con la entrada "expand" aparecen los dos 4 juntos
-// y el 0 se abre desde el medio.
+// Mismo encuadre que el hero del inicio, pero tipográfico y quieto:
+// las partículas quedan solo para el logo.
 export default function NotFound() {
   return (
-    <section className="hero notfound" data-particle-host>
+    <section className="hero notfound">
       <div className="hero__grid" aria-hidden="true" />
-      <ParticleWordmark text="404" />
+      <h1 className="notfound__code" aria-label="Error 404">
+        4<em>0</em>4
+      </h1>
       <div className="wrap hero__copy">
         <h2 className="hero__sub">
           Esta página no existe. <em>Todavía.</em>
