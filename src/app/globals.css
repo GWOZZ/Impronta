@@ -295,10 +295,11 @@ em {
   max-width: calc(var(--wrap) - 2 * var(--gutter) + 32px);
   margin-inline: auto;
   padding: 8px 8px 8px 20px;
-  /* Vidrio esmerilado: desenfoca lo que pasa por detrás. */
+  /* Vidrio esmerilado: desenfoca lo que pasa por detrás. Sin el -webkit- a mano: el
+     compilador de CSS lo agrega solo, y con los dos dejaba únicamente el prefijado
+     (que Chrome y Firefox ignoran). */
   background: rgba(241, 238, 230, 0.5);
   backdrop-filter: blur(18px) saturate(1.6);
-  -webkit-backdrop-filter: blur(18px) saturate(1.6);
   border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 999px;
   box-shadow:
