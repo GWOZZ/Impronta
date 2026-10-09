@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/ContactForm";
-import { products, site } from "@/lib/content";
+import { services, site } from "@/lib/content";
 
 const description = "Canal de contacto de Impronta para evaluar proyectos de IA o software.";
 
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 const next = [
-  { title: "Recibimos tu solicitud", body: "Leemos el contexto y el producto que te interesa." },
+  { title: "Recibimos tu solicitud", body: "Leemos el contexto y el servicio que te interesa." },
   { title: "Definimos objetivo y prioridad", body: "Te contactamos para entender qué querés resolver primero." },
   { title: "Plan concreto", body: "Te proponemos alcance, tiempos y un plan de implementación." },
 ];
@@ -42,11 +42,11 @@ export default function Contacto() {
           </ol>
         </div>
         <ContactForm
-          products={products.map((p) => ({
-            name: p.name,
-            short: p.short,
-            objective: p.objective,
-            template: p.template,
+          services={services.map((s) => ({
+            name: s.name,
+            short: s.short,
+            objective: s.objective,
+            template: s.template,
           }))}
         />
       </div>

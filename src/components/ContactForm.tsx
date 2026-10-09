@@ -3,19 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 import { Arrow } from "./Arrow";
 
-type ProductOption = { name: string; short: string; objective: string; template: string };
+type ServiceOption = { name: string; short: string; objective: string; template: string };
 type Status = { type: "idle" | "sending" | "success" | "error"; message?: string };
 
 const OTHER = "Otro";
 
-function buildTemplate(selected: string[], products: ProductOption[]) {
-  const chosen = products.filter((p) => selected.includes(p.name));
+function buildTemplate(selected: string[], services: ServiceOption[]) {
+  const chosen = services.filter((p) => selected.includes(p.name));
   if (chosen.length === 0) return "";
   if (chosen.length === 1) return chosen[0].template;
-  return `Interés en los siguientes productos: ${chosen.map((p) => p.name).join(", ")}.\nSe solicita una reunión para definir alcance, tiempos y próximos pasos.`;
+  return `Interés en los siguientes servicios: ${chosen.map((p) => p.name).join(", ")}.\nSe solicita una reunión para definir alcance, tiempos y próximos pasos.`;
 }
 
-export function ContactForm({ products }: { products: ProductOption[] }) {
+export function ContactForm({ services }: { services: ServiceOption[] }) {
   const [selected, setSelected] = useState<string[]>([]);
   const [objective, setObjective] = useState("");
   const [message, setMessage] = useState("");
@@ -23,22 +23,22 @@ export function ContactForm({ products }: { products: ProductOption[] }) {
   const lastTemplate = useRef("");
   const formRef = useRef<HTMLFormElement>(null);
 
-  // Precarga desde la URL: ?producto=…&objetivo=… (y ?servicio=… del sitio anterior).
+  // Precarga desde la URL: ?servicio=…&objetivo=… (y ?producto=…, de los links anteriores).
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const wanted = [params.get("producto"), params.get("servicio")]
       .filter(Boolean)
       .flatMap((v) => v!.split(","))
       .map((v) => v.trim());
-    const valid = products.filter((p) => wanted.includes(p.name)).map((p) => p.name);
+    const valid = services.filter((p) => wanted.includes(p.name)).map((p) => p.name);
     if (valid.length) setSelected(valid);
     const obj = params.get("objetivo");
     if (obj) setObjective(obj);
-  }, [products]);
+  }, [services]);
 
   // Completa un mensaje modelo mientras la persona no haya escrito el suyo.
   useEffect(() => {
-    const next = buildTemplate(selected, products);
+    const next = buildTemplate(selected, services);
     setMessage((current) => {
       if (current.trim() === "" || current === lastTemplate.current) {
         lastTemplate.current = next;
@@ -46,7 +46,7 @@ export function ContactForm({ products }: { products: ProductOption[] }) {
       }
       return current;
     });
-  }, [selected, products]);
+  }, [selected, services]);
 
   const toggle = (name: string) =>
     setSelected((s) => (s.includes(name) ? s.filter((n) => n !== name) : [...s, name]));
@@ -71,7 +71,7 @@ export function ContactForm({ products }: { products: ProductOption[] }) {
       website: String(form.get("website") ?? ""),
     };
     if (!payload.service && !payload.message) {
-      setStatus({ type: "error", message: "Elegí un producto o contanos brevemente qué necesitás." });
+      setStatus({ type: "error", message: "Elegí un servicio o contanos brevemente qué necesitás." });
       return;
     }
     setStatus({ type: "sending" });
@@ -115,10 +115,10 @@ export function ContactForm({ products }: { products: ProductOption[] }) {
       </div>
 
       <fieldset className="field">
-        <legend>Producto de interés</legend>
+        <legend>Servicio de interés</legend>
         <p className="field__hint">Podés elegir más de uno. Te completamos un mensaje modelo.</p>
         <div className="choices">
-          {[...products.map((p) => ({ name: p.name, label: p.short })), { name: OTHER, label: OTHER }].map(
+          {[...services.map((s) => ({ name: s.name, label: s.short })), { name: OTHER, label: OTHER }].map(
             (opt) => (
               <label key={opt.name} className="choice">
                 <input
@@ -145,7 +145,7 @@ export function ContactForm({ products }: { products: ProductOption[] }) {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        <p className="field__hint">Opcional si ya elegiste un producto. Si no, contanos brevemente qué necesitás.</p>
+        <p className="field__hint">Opcional si ya elegiste un servicio. Si no, contanos brevemente qué necesitás.</p>
       </div>
 
       {/* Honeypot anti-spam: invisible para personas. */}

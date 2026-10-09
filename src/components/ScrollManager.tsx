@@ -7,7 +7,7 @@ import { useEffect, useLayoutEffect, useRef } from "react";
  * - Al cambiar de página (sin #ancla), vuelve arriba de forma instantánea.
  *   Next.js ya lo intenta, pero puede quedar a mitad de camino con scroll suave
  *   o con la inercia del trackpad.
- * - Los links a anclas de la misma página (#maspeak) se desplazan con suavidad.
+ * - Los links a anclas de la misma página (#branding) se desplazan con suavidad.
  *   Por eso el sitio no usa `scroll-behavior: smooth` global.
  */
 export function ScrollManager() {

@@ -683,8 +683,9 @@ em {
   overflow: hidden;
   box-shadow: 10px 10px 0 var(--ink);
 }
-.intent:has(input[value="maspeak"]:checked) .intent__out--maspeak,
-.intent:has(input[value="contabilidad"]:checked) .intent__out--contabilidad,
+.intent:has(input[value="branding"]:checked) .intent__out--branding,
+.intent:has(input[value="software-interno"]:checked) .intent__out--software-interno,
+.intent:has(input[value="automatizaciones"]:checked) .intent__out--automatizaciones,
 .intent:has(input[value="paginas-web"]:checked) .intent__out--paginas-web {
   visibility: visible;
 }
@@ -711,8 +712,9 @@ em {
   transform: translateY(calc(100% + 32px));
   pointer-events: none;
 }
-.intent:has(input[value="maspeak"]:checked) .intent__out--maspeak::after,
-.intent:has(input[value="contabilidad"]:checked) .intent__out--contabilidad::after,
+.intent:has(input[value="branding"]:checked) .intent__out--branding::after,
+.intent:has(input[value="software-interno"]:checked) .intent__out--software-interno::after,
+.intent:has(input[value="automatizaciones"]:checked) .intent__out--automatizaciones::after,
 .intent:has(input[value="paginas-web"]:checked) .intent__out--paginas-web::after {
   animation: generate 0.75s var(--ease) both;
 }
@@ -816,8 +818,9 @@ em {
   .intent__out {
     display: none;
   }
-  .intent:has(input[value="maspeak"]:checked) .intent__out--maspeak,
-  .intent:has(input[value="contabilidad"]:checked) .intent__out--contabilidad,
+  .intent:has(input[value="branding"]:checked) .intent__out--branding,
+  .intent:has(input[value="software-interno"]:checked) .intent__out--software-interno,
+  .intent:has(input[value="automatizaciones"]:checked) .intent__out--automatizaciones,
   .intent:has(input[value="paginas-web"]:checked) .intent__out--paginas-web {
     display: flex;
   }
@@ -1078,7 +1081,7 @@ html:not(.js) .step__node {
 .page-head .eyebrow::before {
   display: none;
 }
-/* Encabezado que ocupa la primera pantalla (Productos): el contenido que sigue
+/* Encabezado que ocupa la primera pantalla (Servicios): el contenido que sigue
    recién aparece al scrollear. */
 .page-head--screen {
   display: flex;
@@ -1102,7 +1105,7 @@ html:not(.js) .step__node {
   color: var(--muted);
 }
 
-/* ---------- Productos ---------- */
+/* ---------- Servicios ---------- */
 
 .picker {
   margin-top: clamp(32px, 4vw, 52px);
@@ -1113,7 +1116,7 @@ html:not(.js) .step__node {
 }
 .picker__list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1161,6 +1164,17 @@ html:not(.js) .step__node {
 }
 .picker__item:hover .picker__arrow {
   transform: translateY(4px);
+}
+@media (max-width: 1100px) {
+  .picker__list {
+    grid-template-columns: 1fr 1fr;
+  }
+  .picker__list li:nth-child(odd) {
+    border-left: 0;
+  }
+  .picker__list li:nth-child(n + 3) {
+    border-top: 1px solid var(--ink);
+  }
 }
 @media (max-width: 760px) {
   .picker__list {
@@ -1260,70 +1274,8 @@ html:not(.js) .step__node {
   color: var(--fg-muted);
 }
 
-.demos {
-  display: grid;
-  gap: 18px;
-  margin-top: clamp(48px, 7vw, 96px);
-}
-.demos__label {
-  color: var(--fg-muted);
-}
-.demos__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-.demo {
-  position: relative;
-  display: block;
-  aspect-ratio: 960 / 466;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  background: var(--ink-2);
-  text-decoration: none;
-}
-.demo video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.8s var(--ease);
-}
-.demo:hover video {
-  transform: scale(1.04);
-}
-.demo__caption {
-  position: absolute;
-  left: 14px;
-  right: 14px;
-  bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  background: rgba(241, 238, 230, 0.92);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: var(--ink);
-}
-.demo__caption strong {
-  font: 400 1.5rem/1 var(--f-display);
-}
-.demo__open {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-left: auto;
-  font-size: 14px;
-}
-.demo__caption .mono {
-  color: var(--accent);
-}
-
 @media (max-width: 900px) {
-  .spec__grid,
-  .demos__grid {
+  .spec__grid {
     grid-template-columns: 1fr;
   }
   .spec__main {

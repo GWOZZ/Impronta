@@ -49,8 +49,8 @@ export default function Home() {
             <Link href="/contacto" className="btn btn--accent">
               Agendar una reunión gratis <Arrow />
             </Link>
-            <Link href="/productos" className="btn btn--ghost">
-              Ver productos
+            <Link href="/servicios" className="btn btn--ghost">
+              Ver servicios
             </Link>
           </div>
         </div>
@@ -62,7 +62,7 @@ export default function Home() {
           <div data-reveal>
             <IntentBuilder>
               <h2 id="catalogo" className="intent__title">
-                Nuestros productos. <em>Empezá por el objetivo.</em>
+                Nuestros servicios. <em>Empezá por el objetivo.</em>
               </h2>
             </IntentBuilder>
           </div>

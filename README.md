@@ -16,7 +16,7 @@ Según el *Manual de contenidos* del sitio anterior (ongenia.com):
 
 - Todo el contenido (productos, métricas, equipo, formulario) se **renderiza en el servidor**: las páginas son estáticas y las métricas nunca aparecen como "US$0K+".
 - **Contacto** en el header, además del footer y los CTAs.
-- `/clientes` → **`/productos`** con redirección 301 (se conservan los query params).
+- `/clientes` y `/productos` → **`/servicios`** con redirección 301 (se conservan los query params).
 - Se quitó el logo "Cliente C".
 - Tono unificado en **voseo** ("Construimos con vos", "Volvete más efectivo").
 - Etiqueta de sección corregida ("Proceso" en vez de "Inicio").

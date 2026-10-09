@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   if (!EMAIL_RE.test(email)) return NextResponse.json({ error: "Revisá el email de contacto." }, { status: 400 });
   if (!service && !message) {
     return NextResponse.json(
-      { error: "Elegí un producto o contanos brevemente qué necesitás." },
+      { error: "Elegí un servicio o contanos brevemente qué necesitás." },
       { status: 400 },
     );
   }
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
   const text = [
     `Nombre / empresa: ${name}`,
     `Email: ${email}`,
-    `Producto(s): ${service || "—"}`,
+    `Servicio(s): ${service || "—"}`,
     `Objetivo: ${objective || "—"}`,
     "",
     message || "(sin mensaje)",

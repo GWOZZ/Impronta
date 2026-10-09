@@ -2,9 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   async redirects() {
-    // La página de productos vivía en /clientes. Se mantiene la redirección
-    // permanente para no perder links ni posicionamiento.
-    return [{ source: "/clientes", destination: "/productos", statusCode: 301 }];
+    // Los servicios vivieron en /clientes y después en /productos. Se mantienen las
+    // redirecciones permanentes para no perder links ni posicionamiento.
+    return [
+      { source: "/clientes", destination: "/servicios", statusCode: 301 },
+      { source: "/productos", destination: "/servicios", statusCode: 301 },
+    ];
   },
 };
 

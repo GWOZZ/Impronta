@@ -11,16 +11,20 @@ export const site = {
 
 export const nav = [
   { href: "/", label: "Inicio" },
-  { href: "/productos", label: "Productos" },
+  { href: "/servicios", label: "Servicios" },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/contacto", label: "Contacto" },
 ];
 
 export const heroWords = ["IA", "Software"];
 
-export type Objective = "Mejorar atención" | "Automatizar procesos" | "Presencia digital";
+export type Objective =
+  | "Construir marca"
+  | "Software a medida"
+  | "Automatizar procesos"
+  | "Presencia digital";
 
-export type Product = {
+export type Service = {
   slug: string;
   name: string;
   short: string;
@@ -29,85 +33,79 @@ export type Product = {
   /** Frase para el selector "Quiero…" de la home. */
   intent: string;
   description: string;
-  metric: { label: string; value: string; count?: { to: number; prefix: string; suffix: string } };
+  /** Resultado que se lleva el cliente (cualitativo). */
+  outcome: string;
   features: string[];
   cta: string;
-  externalSite?: { label: string; href: string };
-  demos?: { name: string; href: string; video: string }[];
   /** Mensaje modelo que se precarga en el formulario de contacto. */
   template: string;
 };
 
-export const products: Product[] = [
+export const services: Service[] = [
   {
-    slug: "maspeak",
-    name: "Maspeak",
-    short: "Maspeak",
-    tagline: "Recepcionista virtual",
-    objective: "Mejorar atención",
-    intent: "mejorar la atención",
+    slug: "branding",
+    name: "Branding y diseño audiovisual",
+    short: "Branding",
+    tagline: "Identidad de marca",
+    objective: "Construir marca",
+    intent: "construir mi marca",
     description:
-      "Asistente conversacional para hoteles que automatiza llamadas, mensajes y reservas.",
-    metric: {
-      label: "Ingresos recuperados con Maspeak",
-      value: "US$338K+ / año",
-      count: { to: 338, prefix: "US$", suffix: "K+ / año" },
-    },
-    features: ["Agente de voz", "Agente de chat", "Integración con reservas", "Handoff humano"],
-    cta: "Implementar Maspeak",
-    externalSite: { label: "usemaspeak.com", href: "https://usemaspeak.com/" },
+      "Identidad visual, guía de marca y contenido audiovisual para que tu empresa se vea igual de bien en cada canal.",
+    outcome: "Una marca coherente en cada pieza",
+    features: ["Identidad visual", "Guía de marca", "Contenido audiovisual", "Piezas para redes"],
+    cta: "Construir mi marca",
     template:
-      "Interés en implementación de Maspeak.\nSe busca mejorar la atención de consultas y reservas con una solución 24/7.\nSe solicita coordinación de una demo y una propuesta con tiempos de implementación.",
+      "Interés en Branding y diseño audiovisual.\nSe busca construir o renovar la identidad de marca y su contenido audiovisual.\nSe solicita una reunión para definir alcance, tiempos y presupuesto.",
   },
   {
-    slug: "contabilidad",
-    name: "Automatización de Contabilidad Empresarial",
-    short: "Contabilidad",
-    tagline: "Automatiza conciliaciones",
+    slug: "software-interno",
+    name: "Software de uso interno",
+    short: "Software interno",
+    tagline: "Herramientas a medida",
+    objective: "Software a medida",
+    intent: "tener software a medida",
+    description:
+      "Sistemas y herramientas internas hechas para tu equipo: lo que hoy vive en planillas y mails, en un solo lugar.",
+    outcome: "Una herramienta hecha para tu forma de trabajar",
+    features: ["Paneles y reportes", "Gestión de datos", "Integración con tus sistemas", "Accesos por rol"],
+    cta: "Desarrollar mi software",
+    template:
+      "Interés en Software de uso interno.\nSe busca una herramienta a medida para ordenar procesos y datos del equipo.\nSe solicita una propuesta con alcance, tiempos y próximos pasos.",
+  },
+  {
+    slug: "automatizaciones",
+    name: "Automatización de procesos",
+    short: "Automatizaciones",
+    tagline: "Procesos más rápidos",
     objective: "Automatizar procesos",
     intent: "automatizar procesos",
     description:
-      "Automatización contable para reducir tareas manuales y agilizar conciliaciones.",
-    metric: {
-      label: "Reduce el tiempo para realizar conciliaciones",
-      value: "al 0,05% del tiempo manual",
-    },
-    features: [
-      "Conciliaciones automáticas",
-      "Clasificación contable",
-      "Panel de seguimiento",
-    ],
+      "Diseñamos y desarrollamos automatismos con IA y software para acelerar tareas repetitivas y reducir errores.",
+    outcome: "Menos tareas manuales y menos errores",
+    features: ["Relevamiento de procesos", "Flujos automáticos", "IA aplicada", "Integración entre herramientas"],
     cta: "Automatizar mis procesos",
     template:
-      "Interés en Automatización de Contabilidad Empresarial.\nSe busca reducir trabajo manual en conciliaciones y ordenar procesos contables.\nSe solicita una propuesta con alcance, tiempos y próximos pasos.",
+      "Interés en Automatización de procesos.\nSe busca reducir tareas manuales y acelerar procesos repetitivos.\nSe solicita una propuesta con alcance, tiempos y próximos pasos.",
   },
   {
     slug: "paginas-web",
-    name: "Creación de páginas web high quality",
+    name: "Diseño y desarrollo web",
     short: "Páginas web",
     tagline: "Presencia digital",
     objective: "Presencia digital",
     intent: "ganar presencia digital",
     description:
-      "Landing pages y sitios web de alta calidad para presencia digital y conversión.",
-    metric: { label: "Visibilidad", value: "Presencia en buscadores" },
-    features: ["Landing pages", "Sitios web", "Posicionamiento en buscadores", "Foco en conversión"],
+      "Landing pages, sitios institucionales y e-commerce, diseñados para convertir visitas en clientes.",
+    outcome: "Un sitio que convierte visitas en clientes",
+    features: ["Landing pages", "Sitios web", "E-commerce", "Posicionamiento en buscadores"],
     cta: "Hacer mi página web",
-    demos: [
-      { name: "Maspeak", href: "https://usemaspeak.com/", video: "/videos/demo-maspeak.mp4" },
-      {
-        name: "abraChem",
-        href: "https://v0-abrachem-landing-page.vercel.app/",
-        video: "/videos/demo-abrachem.mp4",
-      },
-    ],
     template:
-      "Interés en implementación de sitio web de alta calidad.\nSe busca mejorar presencia digital y conversión de visitas en contactos.\nSe solicita una reunión para definir alcance, tiempos y presupuesto.",
+      "Interés en Diseño y desarrollo web.\nSe busca una landing, sitio o e-commerce para mejorar la presencia digital y la conversión.\nSe solicita una reunión para definir alcance, tiempos y presupuesto.",
   },
 ];
 
-export function contactHref(p: Product) {
-  const q = new URLSearchParams({ producto: p.name, objetivo: p.objective });
+export function contactHref(s: Service) {
+  const q = new URLSearchParams({ servicio: s.name, objetivo: s.objective });
   return `/contacto?${q.toString()}`;
 }
 
@@ -139,7 +137,7 @@ export const clients = [
 
 export const faqs = [
   {
-    q: "¿Cómo se inicia la contratación de un producto o proyecto?",
+    q: "¿Cómo se inicia la contratación de un servicio o proyecto?",
     a: "La solicitud se envía por el formulario de contacto; luego se define objetivo, prioridad y un plan concreto de implementación.",
   },
   {
