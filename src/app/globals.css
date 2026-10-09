@@ -1728,3 +1728,14 @@ html:not(.js) .step__node {
     text-align: center;
   }
 }
+
+/* ---------- 404 ---------- */
+
+.notfound .hero__sub em {
+  font-style: italic;
+  color: var(--accent);
+}
+/* "404" es mucho más corto que "impronta": puede ir más grande, sobre todo en mobile. */
+.notfound .wordmark__text {
+  font-size: clamp(9rem, min(44vw, 44svh), 25rem);
+}
