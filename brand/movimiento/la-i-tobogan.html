@@ -302,8 +302,9 @@ ol.steps li::before { content: counter(s, decimal-leading-zero); font: 500 13px/
     ctx.fill(STEM);
     ctx.restore();
 
-    // Punto, con un aplastado breve al aterrizar.
-    const hidden = state.phase === "hold" || state.phase === "close";
+    // El punto original desaparece en cuanto empieza la transición.
+    // Así queda quieto el origen del círculo de transición y el punto no sigue volando.
+    const hidden = state.wipe !== null || state.phase === "hold" || state.phase === "close";
     if (!hidden) {
       const sq = state.squash > 0 ? Math.sin((state.squash / 0.12) * Math.PI) * 0.18 : 0;
       ctx.save();
@@ -355,3 +356,4 @@ ol.steps li::before { content: counter(s, decimal-leading-zero); font: 500 13px/
   if (!reduced) setTimeout(start, 700);
 })();
 </script>
+</html>
