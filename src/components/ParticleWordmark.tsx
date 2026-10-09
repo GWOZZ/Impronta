@@ -211,7 +211,7 @@ export function ParticleWordmark({ text, intro = "expand" }: { text: string; int
       const gentle = !introDone && mode === "gentle";
       const expand = !introDone && mode === "expand";
       const fade = !introDone && mode === "fade" ? easeOut(clamp01(t / FADE_MS)) : 1;
-      const r = Math.max(70, w * 0.07);
+      const r = Math.max(60, w * 0.06);
       const r2 = r * r;
       for (const p of particles) {
         // 1. Dónde y cómo la ubica la entrada (sin física).
