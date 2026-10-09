@@ -169,17 +169,15 @@ export const team: Member[] = [
     role: "Founder",
     bio: "Fundó Impronta para llevar IA y software a empresas que buscan resultados concretos. Lidera cada proyecto de punta a punta.",
   },
-];
-
-/** Roles que se suman al equipo; se muestran como lugares reservados en /nosotros. */
-export const openRoles = [
   {
-    role: "Diseño y branding",
-    bio: "Va a encabezar el área de diseño y branding: identidad, marca y diseño de producto.",
+    name: "Nombre Apellido",
+    role: "Dirección de Diseño y Branding",
+    bio: "Encabeza el área de diseño y branding: identidad visual, guía de marca y contenido audiovisual de cada proyecto.",
   },
   {
-    role: "Tecnología",
-    bio: "Va a trabajar en arquitectura y desarrollo, codo a codo con Guillermo.",
+    name: "Nombre Apellido",
+    role: "Desarrollo de software",
+    bio: "Construye software interno y automatizaciones junto a Guillermo, con foco en arquitectura, calidad y escalabilidad.",
   },
 ];
 

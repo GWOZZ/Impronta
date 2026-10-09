@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { openRoles, principles, team, site } from "@/lib/content";
+import { principles, team, site } from "@/lib/content";
 import { Arrow } from "@/components/Arrow";
 
 const description = "Equipo y principios de ejecución de Impronta.";
@@ -32,7 +32,7 @@ export default function Nosotros() {
         <div className="wrap">
           <ul className="team">
             {team.map((m, i) => (
-              <li key={m.name} className="member" data-reveal style={{ ["--i" as string]: i % 3 }}>
+              <li key={`${m.name}-${i}`} className="member" data-reveal style={{ ["--i" as string]: i % 3 }}>
                 <div className={`member__photo${m.photo ? "" : " member__photo--initials"}`}>
                   {m.photo ? (
                     <Image
@@ -63,24 +63,6 @@ export default function Nosotros() {
                       LinkedIn <Arrow dir="up-right" />
                     </a>
                   )}
-                </div>
-              </li>
-            ))}
-            {openRoles.map((r, i) => (
-              <li
-                key={r.role}
-                className="member member--open"
-                data-reveal
-                style={{ ["--i" as string]: (team.length + i) % 3 }}
-              >
-                <div className="member__photo" aria-hidden="true">
-                  <span className="member__plus">+</span>
-                  <span className="member__index mono">0{team.length + i + 1}</span>
-                </div>
-                <div className="member__info">
-                  <h2 className="member__name">{r.role}</h2>
-                  <p className="mono member__role">Próximamente</p>
-                  <p className="member__bio">{r.bio}</p>
                 </div>
               </li>
             ))}

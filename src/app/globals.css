@@ -1339,23 +1339,6 @@ html:not(.js) .step__node {
   letter-spacing: -0.03em;
   color: var(--paper);
 }
-/* Rol que se suma: lugar reservado, sin velo. */
-.member--open .member__photo {
-  display: grid;
-  place-items: center;
-  background: transparent;
-  border: 1px dashed var(--line);
-}
-.member--open .member__photo::after {
-  content: none;
-}
-.member__plus {
-  font: 400 clamp(5rem, 8vw, 7rem) / 1 var(--f-display);
-  color: var(--muted);
-}
-.member--open .member__role {
-  color: var(--muted);
-}
 .member__index {
   position: absolute;
   z-index: 1;
