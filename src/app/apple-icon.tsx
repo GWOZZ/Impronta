@@ -15,13 +15,6 @@ const STEM = [
   [16, 24.3],
   [18.7, 24.3],
 ];
-// El punto de la i: un bloque de 2 × 2 partículas en ultramar.
-const TITTLE = [
-  [14.65, 6.85],
-  [17.35, 6.85],
-  [14.65, 9.55],
-  [17.35, 9.55],
-];
 
 // Ícono para la pantalla de inicio del iPhone: la misma "i" del favicon, a sangre
 // (iOS redondea las esquinas por su cuenta).
@@ -33,9 +26,8 @@ export default function AppleIcon() {
           {STEM.map(([cx, cy]) => (
             <rect key={`s${cx}-${cy}`} x={cx - SIZE / 2} y={cy - SIZE / 2} width={SIZE} height={SIZE} fill="#f1eee6" />
           ))}
-          {TITTLE.map(([cx, cy]) => (
-            <rect key={`t${cx}-${cy}`} x={cx - SIZE / 2} y={cy - SIZE / 2} width={SIZE} height={SIZE} fill="#4a3aff" />
-          ))}
+          {/* El punto de la i sigue siendo un círculo, como en el logo. */}
+          <circle cx="16" cy="8.2" r="2.4" fill="#4a3aff" />
         </svg>
       </div>
     ),
