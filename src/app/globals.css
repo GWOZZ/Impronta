@@ -1376,6 +1376,34 @@ html:not(.js) .step__node {
 .member:hover .member__photo::after {
   opacity: 0;
 }
+/* Sin foto: iniciales grandes sobre tinta, con el mismo velo de acento que las fotos. */
+.member__photo--initials {
+  display: grid;
+  place-items: center;
+  background: var(--ink);
+}
+.member__initials {
+  font: 400 clamp(6rem, 11vw, 9rem) / 1 var(--f-display);
+  letter-spacing: -0.03em;
+  color: var(--paper);
+}
+/* Rol que se suma: lugar reservado, sin velo. */
+.member--open .member__photo {
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px dashed var(--line);
+}
+.member--open .member__photo::after {
+  content: none;
+}
+.member__plus {
+  font: 400 clamp(5rem, 8vw, 7rem) / 1 var(--f-display);
+  color: var(--muted);
+}
+.member--open .member__role {
+  color: var(--muted);
+}
 .member__index {
   position: absolute;
   z-index: 1;

@@ -156,43 +156,32 @@ export const faqs = [
   },
 ];
 
-export const team = [
+export type Member = {
+  name: string;
+  role: string;
+  bio: string;
+  /** Sin foto se muestran las iniciales. */
+  photo?: string;
+  linkedin?: string;
+};
+
+export const team: Member[] = [
   {
-    name: "Tomás Wajner",
-    role: "Co-founder / CEO",
-    bio: "Conecta estrategia de negocio y ejecución técnica para llevar ideas a productos reales.",
-    photo: "/team/tomas-wajner.jpg",
+    name: "Guillermo Wajner",
+    role: "Founder",
+    bio: "Fundó Impronta para llevar IA y software a empresas que buscan resultados concretos. Lidera cada proyecto de punta a punta.",
+  },
+];
+
+/** Roles que se suman al equipo; se muestran como lugares reservados en /nosotros. */
+export const openRoles = [
+  {
+    role: "Diseño y branding",
+    bio: "Va a encabezar el área de diseño y branding: identidad, marca y diseño de producto.",
   },
   {
-    name: "Diego Marvid",
-    role: "Co-founder / Tech Lead",
-    bio: "Lidera arquitectura y desarrollo de productos basados en IA con foco en escalabilidad y calidad.",
-    photo: "/team/diego-marvid.jpg",
-    linkedin: "https://www.linkedin.com/in/marvid/",
-  },
-  {
-    name: "Paul Mc Cubbin",
-    role: "Partner / Desarrollador",
-    bio: "Desarrolla soluciones de software e IA orientadas a ejecución, performance y escalabilidad.",
-    photo: "/team/paul-mc-cubbin.png",
-  },
-  {
-    name: "Mia Wajner",
-    role: "Partner / Desarrolladora de Productos",
-    bio: "Ordena producto y experiencia para convertir ideas en soluciones claras, usables y lanzables.",
-    photo: "/team/mia-wajner.jpg",
-  },
-  {
-    name: "Alfonso Mayer",
-    role: "Partner / Director de Marketing / Desarrollador",
-    bio: "Define posicionamiento y crecimiento para comunicar valor técnico con claridad comercial.",
-    photo: "/team/alfonso-mayer.jpg",
-  },
-  {
-    name: "Valentin Saks",
-    role: "Partner / Desarrollador",
-    bio: "Construye productos sólidos y mantenibles con foco en ejecución, detalle y escalabilidad.",
-    photo: "/team/valentin-saks.jpg",
+    role: "Tecnología",
+    bio: "Va a trabajar en arquitectura y desarrollo, codo a codo con Guillermo.",
   },
 ];
 
