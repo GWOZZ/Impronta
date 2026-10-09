@@ -1,6 +1,6 @@
 # impronta.com.uy
 
-Sitio de Impronta (antes Ongenia): IA y software para empresas. Next.js 15 (App Router), TypeScript y CSS sin frameworks.
+Sitio de Impronta: IA y software para empresas. Next.js 15 (App Router), TypeScript y CSS sin frameworks.
 
 ## Concepto de diseño
 
