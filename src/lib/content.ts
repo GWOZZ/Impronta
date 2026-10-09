@@ -128,12 +128,13 @@ export const steps = [
   },
 ];
 
-export const clients = [
-  { name: "abraChem", logo: "/clients/abrachem.png", width: 952, height: 158 },
-  { name: "Radisson", logo: "/clients/radisson.png", width: 781, height: 347 },
-  { name: "Nelcord", logo: "/clients/nelcord.png", width: 676, height: 171 },
-  { name: "Florencia Sztern", logo: "/clients/florencia-sztern.png", width: 894, height: 674 },
-];
+export type Client = { name: string; logo: string; width: number; height: number };
+
+/**
+ * Logos para la sección "Empresas con las que trabajamos" del inicio.
+ * Vacía, la sección no se muestra. Cada logo va en /public/clients.
+ */
+export const clients: Client[] = [];
 
 export const faqs = [
   {

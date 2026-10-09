@@ -90,31 +90,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4 · Clientes */}
-      <section className="section section--tight clients" aria-labelledby="clientes">
-        <div className="wrap clients__head" data-reveal>
-          <h2 id="clientes" className="clients__title">
-            Empresas con las que trabajamos
-          </h2>
-        </div>
-        <div className="marquee">
-          {[0, 1].map((copy) => (
-            <ul key={copy} className="marquee__track" aria-hidden={copy === 1 ? true : undefined}>
-              {[...clients, ...clients].map((c, i) => (
-                <li key={`${c.name}-${i}`} className="marquee__item">
-                  <Image
-                    src={c.logo}
-                    alt={copy === 0 && i < clients.length ? c.name : ""}
-                    width={c.width}
-                    height={c.height}
-                    sizes="200px"
-                  />
-                </li>
-              ))}
-            </ul>
-          ))}
-        </div>
-      </section>
+      {/* 4 · Clientes (solo si hay logos cargados) */}
+      {clients.length > 0 && (
+        <section className="section section--tight clients" aria-labelledby="clientes">
+          <div className="wrap clients__head" data-reveal>
+            <h2 id="clientes" className="clients__title">
+              Empresas con las que trabajamos
+            </h2>
+          </div>
+          <div className="marquee">
+            {[0, 1].map((copy) => (
+              <ul key={copy} className="marquee__track" aria-hidden={copy === 1 ? true : undefined}>
+                {[...clients, ...clients].map((c, i) => (
+                  <li key={`${c.name}-${i}`} className="marquee__item">
+                    <Image
+                      src={c.logo}
+                      alt={copy === 0 && i < clients.length ? c.name : ""}
+                      width={c.width}
+                      height={c.height}
+                      sizes="200px"
+                    />
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* 5 · FAQ */}
       <section className="section faq" aria-labelledby="faq">
