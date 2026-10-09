@@ -128,11 +128,19 @@ export const steps = [
   },
 ];
 
-export type Client = { name: string; logo: string; width: number; height: number };
+export type Client = {
+  name: string;
+  logo: string;
+  width: number;
+  height: number;
+  /** Opcional: con link, el logo abre el sitio del cliente en otra pestaña. */
+  href?: string;
+};
 
 /**
  * Logos para la sección "Empresas con las que trabajamos" del inicio.
  * Vacía, la sección no se muestra. Cada logo va en /public/clients.
+ * Ejemplo: { name: "Cliente", logo: "/clients/cliente.png", width: 900, height: 200, href: "https://cliente.com" }
  */
 export const clients: Client[] = [];
 

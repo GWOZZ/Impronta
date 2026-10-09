@@ -101,17 +101,40 @@ export default function Home() {
           <div className="marquee">
             {[0, 1].map((copy) => (
               <ul key={copy} className="marquee__track" aria-hidden={copy === 1 ? true : undefined}>
-                {[...clients, ...clients].map((c, i) => (
-                  <li key={`${c.name}-${i}`} className="marquee__item">
+                {[...clients, ...clients].map((c, i) => {
+                  // Solo la primera aparición de cada logo es accesible; el resto es la cinta repetida.
+                  const repeat = copy === 1 || i >= clients.length;
+                  const logo = (
                     <Image
                       src={c.logo}
-                      alt={copy === 0 && i < clients.length ? c.name : ""}
+                      alt={repeat ? "" : c.name}
                       width={c.width}
                       height={c.height}
                       sizes="200px"
                     />
-                  </li>
-                ))}
+                  );
+                  return (
+                    <li
+                      key={`${c.name}-${i}`}
+                      className="marquee__item"
+                      aria-hidden={repeat && copy === 0 ? true : undefined}
+                    >
+                      {c.href ? (
+                        <a
+                          href={c.href}
+                          className="marquee__link"
+                          target="_blank"
+                          rel="noopener"
+                          tabIndex={repeat ? -1 : undefined}
+                        >
+                          {logo}
+                        </a>
+                      ) : (
+                        logo
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             ))}
           </div>

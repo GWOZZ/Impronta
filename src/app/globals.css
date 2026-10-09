@@ -972,9 +972,22 @@ html:not(.js) .step__node {
     filter 0.4s,
     opacity 0.4s;
 }
-.marquee__item img:hover {
+.marquee__item img:hover,
+.marquee__link:focus-visible img {
   filter: none;
   opacity: 1;
+}
+.marquee__link {
+  display: block;
+  border-radius: 8px;
+}
+.marquee__link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+/* Con el foco en un logo, la cinta se detiene para poder leerlo. */
+.marquee:focus-within .marquee__track {
+  animation-play-state: paused;
 }
 
 /* ---------- FAQ ---------- */
