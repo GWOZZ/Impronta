@@ -22,7 +22,7 @@ const orgJsonLd = {
   name: site.name,
   alternateName: `${site.wordmark} - ${site.signature}`,
   url: site.url,
-  logo: `${site.url}/og-card-social.jpg`,
+  logo: `${site.url}/og-impronta.jpg`,
 };
 
 export default function Home() {

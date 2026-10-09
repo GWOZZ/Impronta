@@ -10,24 +10,36 @@ type Particle = {
   vx: number;
   vy: number;
   a: boolean;
-  /** Desplazamiento inicial y demora (ms) para la entrada "gentle". */
+  /** Desplazamiento inicial y demora (ms) para la entrada. */
   ox: number;
   oy: number;
   d: number;
+  /** Pertenece a la primera o la última letra (la "i" y la "a" de "impronta"). */
+  edge: boolean;
 };
 
 /**
  * Entrada del logo al abrir el sitio:
+ * - expand: aparecen solo la primera y la última letra juntas ("ia" en "impronta"),
+ *   en color de acento; después se separan a su lugar y las letras del medio
+ *   aparecen desde el centro hacia afuera.
  * - gentle: cada partícula aparece cerca de su lugar y se acomoda con una ola suave.
  * - fade: el logo de puntos aparece en su lugar con un fundido.
  * - none: el logo aparece ya armado.
- * Se puede probar cada una con ?intro=gentle|fade|none.
+ * Se puede probar cada una con ?intro=expand|gentle|fade|none.
  */
-export type Intro = "gentle" | "fade" | "none";
-const INTROS: Intro[] = ["gentle", "fade", "none"];
+export type Intro = "expand" | "gentle" | "fade" | "none";
+const INTROS: Intro[] = ["expand", "gentle", "fade", "none"];
 const GENTLE_MS = 1100;
 const FADE_MS = 900;
+// Tiempos de "expand" (ms): aparece "ia", pausa, se abre.
+const EXPAND_IN = 700;
+const EXPAND_SPLIT = 1400;
+const EXPAND_MOVE = 1100;
+const EXPAND_MID = 1000;
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
 
 /**
  * Dibuja el wordmark como una nube de partículas que se "genera" al cargar y
@@ -38,7 +50,7 @@ const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
  * El canvas cubre el contenedor marcado con `data-particle-host` (el hero
  * entero), así las partículas pueden alejarse del logo sin recortarse.
  */
-export function ParticleWordmark({ text, intro = "gentle" }: { text: string; intro?: Intro }) {
+export function ParticleWordmark({ text, intro = "expand" }: { text: string; intro?: Intro }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -103,15 +115,34 @@ export function ParticleWordmark({ text, intro = "gentle" }: { text: string; int
       heading.removeChild(probe);
 
       const node = heading.firstChild;
+      const lefts: number[] = [];
+      const rights: number[] = [];
       if (node?.nodeType === Node.TEXT_NODE) {
         const range = document.createRange();
         const chars = node.textContent ?? "";
         for (let i = 0; i < chars.length; i++) {
           range.setStart(node, i);
           range.setEnd(node, i + 1);
-          o.fillText(chars[i], range.getBoundingClientRect().left - rect.left, baseline);
+          const r = range.getBoundingClientRect();
+          lefts.push(r.left - rect.left);
+          rights.push(r.right - rect.left);
+          o.fillText(chars[i], r.left - rect.left, baseline);
         }
       }
+      const n = lefts.length;
+      const charAt = (x: number) => {
+        let i = 0;
+        while (i < n - 1 && x >= lefts[i + 1]) i++;
+        return i;
+      };
+      // "expand": la primera y la última letra arrancan juntas en el centro de la palabra.
+      const cx = n ? (lefts[0] + rights[n - 1]) / 2 : w / 2;
+      const half = n ? (rights[n - 1] - lefts[0]) / 2 : 1;
+      const firstW = n ? rights[0] - lefts[0] : 0;
+      const lastW = n ? rights[n - 1] - lefts[n - 1] : 0;
+      const compactLeft = cx - (firstW + lastW) / 2;
+      const shiftFirst = n ? compactLeft - lefts[0] : 0;
+      const shiftLast = n ? compactLeft + firstW - lefts[n - 1] : 0;
 
       const fontPx = parseFloat(hs.fontSize);
       const step = Math.max(3, Math.round(fontPx / 46));
@@ -125,7 +156,20 @@ export function ParticleWordmark({ text, intro = "gentle" }: { text: string; int
             let ox = 0;
             let oy = 0;
             let d = 0;
-            if (!introDone && mode === "gentle") {
+            let edge = false;
+            if (!introDone && mode === "expand" && n > 1) {
+              const c = charAt(x);
+              edge = c === 0 || c === n - 1;
+              if (edge) {
+                ox = c === 0 ? shiftFirst : shiftLast;
+              } else {
+                // Las letras del medio salen del centro hacia afuera.
+                ox = (cx - x) * 0.9;
+                const charCenter = (lefts[c] + rights[c]) / 2;
+                d = (Math.abs(charCenter - cx) / half) * 380 + Math.random() * 120;
+                maxDelay = Math.max(maxDelay, d);
+              }
+            } else if (!introDone && mode === "gentle") {
               const angle = Math.random() * Math.PI * 2;
               const dist = fontPx * (0.04 + Math.random() * 0.1);
               ox = Math.cos(angle) * dist;
@@ -134,14 +178,19 @@ export function ParticleWordmark({ text, intro = "gentle" }: { text: string; int
               d = (x / w) * 500 + Math.random() * 260;
               maxDelay = Math.max(maxDelay, d);
             }
-            next.push({ x: x + ox, y: y + oy, hx: x, hy: y, vx: 0, vy: 0, a: Math.random() < 0.06, ox, oy, d });
+            next.push({ x: x + ox, y: y + oy, hx: x, hy: y, vx: 0, vy: 0, a: Math.random() < 0.06, ox, oy, d, edge });
           }
         }
       }
       particles = next;
       if (!introDone && !introStart) {
         introStart = performance.now();
-        introEnd = mode === "gentle" ? maxDelay + GENTLE_MS : FADE_MS;
+        introEnd =
+          mode === "expand"
+            ? EXPAND_SPLIT + Math.max(EXPAND_MOVE, 150 + maxDelay + EXPAND_MID)
+            : mode === "gentle"
+              ? maxDelay + GENTLE_MS
+              : FADE_MS;
       }
     };
 
@@ -151,10 +200,15 @@ export function ParticleWordmark({ text, intro = "gentle" }: { text: string; int
       const t = now - introStart;
       if (!introDone && t >= introEnd) introDone = true;
       const gentle = !introDone && mode === "gentle";
+      const expand = !introDone && mode === "expand";
       ctx.globalAlpha = !introDone && mode === "fade" ? easeOut(Math.min(1, Math.max(0, t / FADE_MS))) : 1;
       const r = Math.max(70, w * 0.07);
       const r2 = r * r;
       for (const p of particles) {
+        if (expand) {
+          drawExpand(p, t);
+          continue;
+        }
         if (gentle) {
           // Entrada suave: se acerca a su lugar mientras aparece (sin física).
           const e = easeOut(Math.min(1, Math.max(0, (t - p.d) / GENTLE_MS)));
@@ -181,6 +235,36 @@ export function ParticleWordmark({ text, intro = "gentle" }: { text: string; int
         ctx.fillStyle = p.a ? accent : ink;
         ctx.fillRect(p.x - size / 2, p.y - size / 2, size, size);
       }
+    };
+
+    // Un cuadro de la entrada "expand" para una partícula (sin física).
+    const drawExpand = (p: Particle, t: number) => {
+      let alpha: number;
+      let accentMix = 0; // 1 = color de acento, 0 = color normal
+      if (p.edge) {
+        alpha = easeOut(clamp01(t / EXPAND_IN));
+        const k = easeInOut(clamp01((t - EXPAND_SPLIT) / EXPAND_MOVE));
+        p.x = p.hx + p.ox * (1 - k);
+        accentMix = 1 - clamp01((t - EXPAND_SPLIT - 400) / 700);
+      } else {
+        const k = easeOut(clamp01((t - EXPAND_SPLIT - 150 - p.d) / EXPAND_MID));
+        p.x = p.hx + p.ox * (1 - k);
+        alpha = k;
+      }
+      p.y = p.hy;
+      if (alpha <= 0) return;
+      const base = p.a ? accent : ink;
+      if (accentMix < 1) {
+        ctx.globalAlpha = alpha * (1 - accentMix);
+        ctx.fillStyle = base;
+        ctx.fillRect(p.x - size / 2, p.y - size / 2, size, size);
+      }
+      if (accentMix > 0) {
+        ctx.globalAlpha = alpha * accentMix;
+        ctx.fillStyle = accent;
+        ctx.fillRect(p.x - size / 2, p.y - size / 2, size, size);
+      }
+      ctx.globalAlpha = 1;
     };
 
     const loop = (now: number) => {

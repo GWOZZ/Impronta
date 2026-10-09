@@ -83,7 +83,7 @@ export function ContactForm({ products }: { products: ProductOption[] }) {
       });
       const data = (await res.json().catch(() => null)) as { message?: string; error?: string } | null;
       if (!res.ok) throw new Error(data?.error || `No pudimos enviar el mensaje (HTTP ${res.status}).`);
-      setStatus({ type: "success", message: data?.message || "¡Gracias! El equipo de Ongenia te va a responder a la brevedad." });
+      setStatus({ type: "success", message: data?.message || "¡Gracias! El equipo de Impronta te va a responder a la brevedad." });
       reset();
     } catch (err) {
       setStatus({

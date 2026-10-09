@@ -1,18 +1,18 @@
-# ongenia.com
+# impronta.com.uy
 
-Sitio de Ongenia — *On Generative Intelligence*. Next.js 15 (App Router), TypeScript y CSS sin frameworks.
+Sitio de Impronta (antes Ongenia): IA y software para empresas. Next.js 15 (App Router), TypeScript y CSS sin frameworks.
 
 ## Concepto de diseño
 
-La marca se llama "On Generative Intelligence", así que el sitio se comporta como un sistema generativo:
+"Impronta" lleva la IA adentro: empieza con *i* y termina con *a*. El sitio juega con eso y con la idea de un sistema generativo:
 
-- **Wordmark de partículas.** En la home, "ongenia" se arma con miles de puntos que se ensamblan al cargar y se dispersan con el cursor. El `<h1>` real queda debajo para SEO, lectores de pantalla y navegadores sin JS.
+- **Wordmark de partículas.** En la home, "impronta" está hecho de miles de puntos que se dispersan con el cursor. Al cargar aparece "ia" en color de acento y se abre desde el medio hasta formar la palabra (entrada `expand`; también hay `gentle`, `fade` y `none`, que se prueban con `?intro=`). El `<h1>` real queda debajo para SEO, lectores de pantalla y navegadores sin JS.
 - **El catálogo como una frase.** "Quiero *mejorar la atención* / *automatizar procesos* / *ganar presencia digital*": elegís el objetivo y aparece el producto recomendado como una respuesta generada. Funciona solo con CSS (radios + `:has`).
 - **Sistema visual:** papel cálido y tinta, acento ultramar eléctrico y señal lima en las secciones oscuras. Instrument Serif para display, Inter Tight para lectura y JetBrains Mono para etiquetas.
 
 ## Qué resuelve respecto del sitio anterior
 
-Según el *Manual de contenidos — ongenia.com*:
+Según el *Manual de contenidos* del sitio anterior (ongenia.com):
 
 - Todo el contenido (productos, métricas, equipo, formulario) se **renderiza en el servidor**: las páginas son estáticas y las métricas nunca aparecen como "US$0K+".
 - **Contacto** en el header, además del footer y los CTAs.

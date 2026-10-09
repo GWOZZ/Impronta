@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Ongenia — sistema visual
+   Impronta — sistema visual
    Papel cálido + tinta, un acento ultramar eléctrico y una señal lima
    para las secciones oscuras. Serif de display, grotesca para lectura,
    mono para etiquetas "de máquina".
@@ -323,7 +323,7 @@ em {
   letter-spacing: -0.01em;
   text-decoration: none;
   margin-right: auto;
-  /* La caja de texto incluye espacio para ascendentes que "ongenia" no usa:
+  /* La caja de texto incluye espacio para ascendentes que "impronta" casi no usa (solo la t):
      se sube para que la banda de la x (y el punto) quede al centro del navbar. */
   transform: translateY(-0.068em);
 }
@@ -524,7 +524,7 @@ em {
   touch-action: pan-y;
 }
 .wordmark__text {
-  /* "ongenia" no tiene ascendentes: la línea se ajusta a la altura de la x
+  /* "impronta" casi no tiene ascendentes (solo la t): la línea se ajusta a la altura de la x
      (más el punto de la i y la cola de la g), sin aire vacío arriba. */
   /* También limitado por el alto de la ventana, para que el hero entre en pantallas bajas. */
   font: 400 clamp(6.2rem, min(27vw, 46svh), 25rem) / 0.72 var(--f-display);

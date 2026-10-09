@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { principles, team } from "@/lib/content";
+import { principles, team, site } from "@/lib/content";
 import { Arrow } from "@/components/Arrow";
 
-const description = "Equipo fundador y principios de ejecución de Ongenia.";
+const description = "Equipo fundador y principios de ejecución de Impronta.";
 
 export const metadata: Metadata = {
   title: "Nosotros",
   description,
   alternates: { canonical: "/nosotros" },
-  openGraph: { title: "Nosotros | Ongenia", description, url: "/nosotros" },
+  openGraph: { title: `Nosotros | ${site.name}`, description, url: "/nosotros" },
 };
 
 export default function Nosotros() {

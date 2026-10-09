@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/ContactForm";
-import { products } from "@/lib/content";
+import { products, site } from "@/lib/content";
 
-const description = "Canal de contacto de Ongenia para evaluar proyectos de IA o software.";
+const description = "Canal de contacto de Impronta para evaluar proyectos de IA o software.";
 
 export const metadata: Metadata = {
   title: "Contacto",
   description,
   alternates: { canonical: "/contacto" },
-  openGraph: { title: "Contacto | Ongenia", description, url: "/contacto" },
+  openGraph: { title: `Contacto | ${site.name}`, description, url: "/contacto" },
 };
 
 const next = [

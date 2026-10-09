@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CountUp } from "@/components/CountUp";
-import { contactHref, products } from "@/lib/content";
+import { contactHref, products, site } from "@/lib/content";
 import { Arrow } from "@/components/Arrow";
 
 const description = "Servicios de IA y software explicados en detalle y casos de aplicación reales.";
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Productos",
   description,
   alternates: { canonical: "/productos" },
-  openGraph: { title: "Productos | Ongenia", description, url: "/productos" },
+  openGraph: { title: `Productos | ${site.name}`, description, url: "/productos" },
 };
 
 export default function Productos() {

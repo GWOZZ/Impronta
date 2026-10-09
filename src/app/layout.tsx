@@ -23,12 +23,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    locale: "es_AR",
+    locale: "es_UY",
     siteName: site.name,
     url: "/",
     title: site.name,
     description: site.description,
-    images: [{ url: "/og-card-social.jpg", width: 1200, height: 630, alt: site.name }],
+    images: [{ url: "/og-impronta.jpg", width: 1200, height: 630, alt: site.name }],
   },
   twitter: { card: "summary_large_image" },
 };
@@ -38,7 +38,7 @@ export const viewport: Viewport = { themeColor: "#f1eee6" };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      lang="es-AR"
+      lang="es-UY"
       className={`${display.variable} ${sans.variable} ${mono.variable}`}
       // El script de abajo agrega la clase "js" antes de hidratar.
       suppressHydrationWarning

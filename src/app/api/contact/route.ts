@@ -66,7 +66,7 @@ export async function POST(req: Request) {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: process.env.CONTACT_FROM_EMAIL || "Ongenia <web@ongenia.com>",
+      from: process.env.CONTACT_FROM_EMAIL || "Impronta <web@impronta.com.uy>",
       to: to.split(",").map((s) => s.trim()),
       reply_to: email,
       subject: `Nueva solicitud web: ${service || name}`,
@@ -79,5 +79,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "No pudimos enviar el mensaje. Probá de nuevo." }, { status: 502 });
   }
 
-  return NextResponse.json({ message: "¡Gracias! El equipo de Ongenia te va a responder a la brevedad." });
+  return NextResponse.json({ message: "¡Gracias! El equipo de Impronta te va a responder a la brevedad." });
 }

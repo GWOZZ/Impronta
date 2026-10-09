@@ -2,10 +2,10 @@
 // y quede visible para buscadores y redes sin depender de JavaScript.
 
 export const site = {
-  name: "Ongenia",
-  wordmark: "ongenia",
-  signature: "On Generative Intelligence",
-  url: "https://www.ongenia.com",
+  name: "Impronta",
+  wordmark: "impronta",
+  signature: "IA y software para empresas",
+  url: "https://impronta.com.uy",
   description: "Soluciones de IA y software para empresas",
 };
 
