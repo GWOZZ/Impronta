@@ -122,6 +122,17 @@ export function ParticleWordmark({ text, intro = "expand" }: { text: string; int
       const baseline = probe.getBoundingClientRect().bottom - rect.top;
       heading.removeChild(probe);
 
+      // Con la interletra cerrada los glifos se pisan (la t entra en la columna de la a), así
+      // que la primera y la última letra se dibujan también en una capa aparte: rojo y azul.
+      // Una partícula es de esas letras solo si cae sobre su dibujo, no por su posición.
+      const edgesCanvas = document.createElement("canvas");
+      edgesCanvas.width = off.width;
+      edgesCanvas.height = off.height;
+      const e = edgesCanvas.getContext("2d")!;
+      e.font = o.font;
+      e.textBaseline = "alphabetic";
+      e.textAlign = "left";
+
       const node = heading.firstChild;
       const lefts: number[] = [];
       const rights: number[] = [];
@@ -135,13 +146,21 @@ export function ParticleWordmark({ text, intro = "expand" }: { text: string; int
           lefts.push(r.left - rect.left);
           rights.push(r.right - rect.left);
           o.fillText(chars[i], r.left - rect.left, baseline);
+          if (i === 0 || i === chars.length - 1) {
+            e.fillStyle = i === 0 ? "#f00" : "#00f";
+            e.fillText(chars[i], r.left - rect.left, baseline);
+          }
         }
       }
       const n = lefts.length;
-      const charAt = (x: number) => {
+      const edges = e.getImageData(0, 0, off.width, off.height).data;
+      const charAt = (x: number, y: number) => {
+        const k = (Math.floor(y) * off.width + Math.floor(x)) * 4;
+        if (edges[k + 3] > 128) return edges[k] > edges[k + 2] ? 0 : n - 1;
         let i = 0;
         while (i < n - 1 && x >= lefts[i + 1]) i++;
-        return i;
+        // Fuera del dibujo de la primera y la última letra es una letra del medio.
+        return Math.min(Math.max(i, 1), n - 2);
       };
       // "expand": la primera y la última letra arrancan juntas en el centro de la palabra.
       const cx = n ? (lefts[0] + rights[n - 1]) / 2 : w / 2;
@@ -167,7 +186,7 @@ export function ParticleWordmark({ text, intro = "expand" }: { text: string; int
             let d = 0;
             let edge = false;
             if (!introDone && mode === "expand" && n > 1) {
-              const c = charAt(x);
+              const c = charAt(x, y);
               edge = c === 0 || c === n - 1;
               if (edge) {
                 ox = c === 0 ? shiftFirst : shiftLast;
